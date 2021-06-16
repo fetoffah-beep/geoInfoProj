@@ -21,7 +21,6 @@ def read_nav(file_rinex):
         if line[0]=='G':
             x=0
             sat=[]
-            epoch=[]
         #check indexes
         if x==0:
             prn=line[1:3]
@@ -31,17 +30,10 @@ def read_nav(file_rinex):
             hour=line[15:17]
             minute=line[18:20]
             second=line[21:23]
-            epoch.append([year,
-                         month,
-                         day,
-                         hour,
-                         minute,
-                         second])
             clockbias=line[23:42]
             clockdrift=line[42:61]
             clockdriftrate=line[61:80]
-            flat_epoch=[item for sublist in epoch for item in sublist]
-            sat.append([prn, flat_epoch, clockbias, clockdrift, clockdriftrate])
+            sat.append([prn, year, month, day, hour, minute, second, clockbias, clockdrift, clockdriftrate])
         elif x==1:
             iode=line[4:23]
             crs=line[23:42]
@@ -57,9 +49,9 @@ def read_nav(file_rinex):
         elif x==3:
             toe=line[4:23]
             cic=line[23:42]
-            omega=line[42:61]
+            omega0=line[42:61]
             cis=line[61:80]
-            sat.append([toe, cic, omega, cis])
+            sat.append([toe, cic, omega0, cis])
         elif x==4:
             i0=line[4:23]
             crc=line[23:42]
@@ -83,8 +75,9 @@ def read_nav(file_rinex):
             fit_interval=line[23:42]
             sat.append([transimission_time, fit_interval])
             flat_sat=[item for sublist in sat for item in sublist]
+            flat_sat=[float(i) for i in flat_sat]
             nav.append(flat_sat)
-            print(nav)
+            #print(nav)
         
         x += 1      
         
