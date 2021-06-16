@@ -32,6 +32,7 @@ for item in nav:
     hour=int(item[4])
     minute=int(item[5])
     second=int(item[6])
+    #epoch=[year, month, day, hour, minute, second]
     clockbias=item[7]
     clockdrift=item[8]
     clockdriftrate=item[9]
@@ -151,7 +152,7 @@ for item in nav:
     print(z_vel)
     
     #printing on file
-    sat_values=[sv_prn, x, y, z, x_vel, y_vel, z_vel]
+    sat_values=[sv_prn, time_from_eph_rt, x, y, z, x_vel, y_vel, z_vel]
     file1.writelines("%s\n" % str(sat_values))
 
 
