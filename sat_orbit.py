@@ -17,7 +17,9 @@ nav_file=open(file_name, 'r')
 nav=read_nav(nav_file)
 #print(nav)
 
-file1 = open("Output.txt","w+")
+file1 = open("Output.txt", "w")
+file1.write("sv_prn, time-toe, x, y, z, xdot, ydot, zdot \n")
+file1.close()
 
 # Time
 t=int(input("Insert time: "))
@@ -153,6 +155,7 @@ for item in nav:
     
     #printing on file
     sat_values=[sv_prn, time_from_eph_rt, x, y, z, x_vel, y_vel, z_vel]
+    file1 = open("Output.txt", "a")
     file1.writelines("%s\n" % str(sat_values))
 
 
