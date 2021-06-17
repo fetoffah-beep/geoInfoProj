@@ -16,6 +16,8 @@ def read_nav(file_rinex):
     nav=[]
     while  True:
         line=file_rinex.readline()
+        line=line.replace('D', 'e')
+        print(line)
         if not line:
             break
         if line[0]=='G':
@@ -31,6 +33,11 @@ def read_nav(file_rinex):
             minute=line[18:20]
             second=line[21:23]
             clockbias=line[23:42]
+            """
+            if clockbias[0]==' ':
+                clockbias='0' + clockbias[1:]
+            #print(clockbias) """
+            #clockbias=clockbias.replace('D', 'e')
             clockdrift=line[42:61]
             clockdriftrate=line[61:80]
             sat.append([prn, year, month, day, hour, minute, second, clockbias, clockdrift, clockdriftrate])
@@ -72,9 +79,12 @@ def read_nav(file_rinex):
             sat.append([sv_accuracy, sv_health, tgd, iodc])
         elif x==7:    
             transimission_time=line[4:23]
-            fit_interval=line[23:42]
-            sat.append([transimission_time, fit_interval])
+            #fit_interval=line[23:42]
+            #sat.append([transimission_time, fit_interval])
+            sat.append([transimission_time])
+            print(sat)
             flat_sat=[item for sublist in sat for item in sublist]
+            print(flat_sat)
             flat_sat=[float(i) for i in flat_sat]
             nav.append(flat_sat)
             #print(nav)

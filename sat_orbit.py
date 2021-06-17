@@ -63,7 +63,7 @@ for item in nav:
     tgd=item[32]
     iodc=item[33]
     transmission_time=item[34]
-    fit_interval=item[35]
+    #fit_interval=item[35]
     
     # Fixed values
     pi=3.1415926535898
@@ -158,9 +158,7 @@ for item in nav:
     file1 = open("Output.txt", "a")
     file1.writelines("%s\n" % str(sat_values))
 
-
 file1.close()
-
 
 print()
 input('Press ENTER to close');
