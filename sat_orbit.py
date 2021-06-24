@@ -29,9 +29,7 @@ for item in nav:
     prn=int(item[0])
     #epoch=item[1]
     year=int(item[1])
-    print(year)
     month=int(item[2])
-    print(month)
     day=int(item[3])
     hour=int(item[4])
     minute=int(item[5])
