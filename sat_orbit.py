@@ -66,7 +66,7 @@ for item in nav:
     #fit_interval=item[35]
     
     # Fixed values
-    pi=3.1415926535898
+    pi=math.atan(1)*4
     #A_ref=26559710   #semimajor axis reference   #meters
     capital_omega_dot_ref=-2.6*10**(-9)   #rate ascension rate reference   #semicircles/sec
     earth_grav_const=3.986005 * 10**14   #m^3/s^2
@@ -104,7 +104,7 @@ for item in nav:
     x_orb_plane=r_k*math.cos(u_k)    #position in orbital plane
     y_orb_plane=r_k*math.sin(u_k)
 
-    capital_omega_k=omega0_cap + (capital_omega_dot_ref - earth_rotation_rate)*time_from_eph_rt \
+    capital_omega_k=omega0_cap + (omegadot_cap - earth_rotation_rate)*time_from_eph_rt \
         - earth_rotation_rate*toe    #corrected longitude of ascending node
 
 
