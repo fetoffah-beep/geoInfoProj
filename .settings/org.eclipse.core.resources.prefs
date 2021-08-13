@@ -1,8 +1,0 @@
-eclipse.preferences.version=1
-encoding/GPStime.py=utf-8
-encoding/cart2geod.py=utf-8
-encoding/ecef2eci.py=utf-8
-encoding/geometricRange.py=utf-8
-encoding/ionosphericCorrectionSF.py=utf-8
-encoding/read_rinex.py=utf-8
-encoding/sat_orbit.py=utf-8
