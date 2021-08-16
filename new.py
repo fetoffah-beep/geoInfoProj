@@ -37,14 +37,13 @@ from matplotlib.figure import Figure
 class MainFrame ( wx.Frame ):
     
     def __init__( self, parent ):
-        wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"GNSS Data Processing", pos = wx.DefaultPosition, size =  wx.DefaultSize, style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
-        
+        #wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"GNSS Data Processing", pos = wx.DefaultPosition, size =  (wx.DefaultSize), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+        wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"GNSS Data Processing", pos = wx.DefaultPosition, size = (800,500), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+
         self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
-        
         vSizer = wx.BoxSizer( wx.VERTICAL )     # Horinzontal box sizer
         hSizer = wx.BoxSizer( wx.HORIZONTAL )     # Vertival box sizer
-
         
         self.SetSizer( vSizer )
         self.Layout()
@@ -104,12 +103,14 @@ class MainFrame ( wx.Frame ):
         # NoteBooks as container for the drawing widgets
         
         self.noteBook = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.NB_FIXEDWIDTH|wx.NB_TOP )
-        insNoteBookWindow = InsertParameterNoteBookPanel(self.noteBook)
+        satNoteBookWindow = SatelliteNoteBookPanel(self.noteBook)
+        ionoNoteBookWindow = IonosphericNoteBookPanel(self.noteBook)
         pProsNoteBookWindow = PreProcessingNoteBookPanel(self.noteBook)
         outNoteBookWindow = OutputNoteBookPanel(self.noteBook)
 
         # Add the pages to the noteBook
-        self.noteBook.AddPage(insNoteBookWindow, 'Input Parameter')
+        self.noteBook.AddPage(satNoteBookWindow, 'Satellite')
+        self.noteBook.AddPage(ionoNoteBookWindow, 'Ionosphere')
         self.noteBook.AddPage(pProsNoteBookWindow, 'Processing')
         self.noteBook.AddPage(outNoteBookWindow, 'Output')
 
@@ -264,7 +265,7 @@ class MainFrame ( wx.Frame ):
 ## Class Note Book 
 ###########################################################################
        
-class InsertParameterNoteBookPanel(wx.Panel):
+class SatelliteNoteBookPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
 
@@ -273,12 +274,10 @@ class InsertParameterNoteBookPanel(wx.Panel):
         
         # Create the static box for receiving parameters for the functionalities
         satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Satellite Orbit Parameters" ), wx.VERTICAL )
-        ionosphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Ionosphere Parameters" ), wx.VERTICAL )
         # troposphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Troposphere Parameters" ), wx.VERTICAL )
         
         # Add the static box to the sizer
         noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
-        noteBookSizer.Add( ionosphereStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
         # noteBookSizer.Add( troposphereStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
 
 
@@ -322,12 +321,57 @@ class InsertParameterNoteBookPanel(wx.Panel):
         
         
         
-
-# ------------------------------------------------------------------
-
+        
+       
+        # Connected events
+        self.orbitPoceedButton.Bind( wx.EVT_BUTTON, self.OrbitCompute )
+        # self.svPRNbutton.Bind( wx.EVT_BUTTON, self.OrbitCompute )
         
         
 
+        ########################################################################################
+        # Troposphere parameter
+        ########################################################################################
+
+        
+        
+        self.SetSizer( noteBookSizer )
+        self.Layout()
+        
+# -------------------------------------------
+    def OrbitCompute(self, event):
+        filePath = self.satelliteFilePicker.GetPath()
+        ionoParams = readIono( filePath )
+        svPRN = self.prnTextCtrl.GetValue()
+
+        satelliteOrbit = SatelliteInfo( filePath, svPRN )
+
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax.stock_img()
+        
+        plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', transform=ccrs.Geodetic())
+        font1={'family':'serif','color':'black','size':15}
+        first_epc=str(satelliteOrbit.first_epoch)
+        last_epc=str(satelliteOrbit.last_epoch)
+        plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+        #plt.suptitle()
+        plt.show()
+
+
+
+
+
+class IonosphericNoteBookPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        
+        noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
+        ionosphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Ionosphere Parameters" ), wx.VERTICAL )
+        # troposphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Troposphere Parameters" ), wx.VERTICAL )
+        
+        # Add the static box to the sizer
+        noteBookSizer.Add( ionosphereStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
+        
         ########################################################################################
         # Ionosphere parameter
         ########################################################################################
@@ -498,42 +542,12 @@ class InsertParameterNoteBookPanel(wx.Panel):
 
         # Connected events
         self.choiceComboBox.Bind( wx.EVT_COMBOBOX, self.OnCombo )
-        self.orbitPoceedButton.Bind( wx.EVT_BUTTON, self.OrbitCompute )
         self.proceedButton.Bind( wx.EVT_BUTTON, self.IonosphereCompute )
         # self.svPRNbutton.Bind( wx.EVT_BUTTON, self.OrbitCompute )
         
-        
-
-        ########################################################################################
-        # Troposphere parameter
-        ########################################################################################
-
-        
-        
         self.SetSizer( noteBookSizer )
         self.Layout()
-# -------------------------------------------
-    def OrbitCompute(self, event):
-        filePath = self.satelliteFilePicker.GetPath()
-
-        ionoParams = readIono( filePath )
-
-        svPRN = self.prnTextCtrl.GetValue()
-
-        satelliteOrbit = SatelliteInfo( filePath, svPRN )
-
-
-
-
-        ax = plt.axes(projection=ccrs.PlateCarree())
-        ax.stock_img()
-
-        plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', transform=ccrs.Geodetic());
-
-        plt.show()
-
-
-
+        
     def IonosphereCompute( self, event ):
         if self.choiceComboBox.GetValue() == 'Station analysis':
             elevation = np.linspace(0, 90, 181)
@@ -651,10 +665,7 @@ class InsertParameterNoteBookPanel(wx.Panel):
             self.latDegControl.Show(False)
             self.latMinControl.Show(False)
             self.latSSControl.Show(False)
-
-
-
-
+        
 class PreProcessingNoteBookPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -741,7 +752,15 @@ class PreProcessingNoteBookPanel(wx.Panel):
 class OutputNoteBookPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-
+     
+        # figure=Figure()
+        # axes=figure.add_subplot(111)
+        # canvas=FigureCanvas(self, -1, figure)
+        # axes.stock_img()
+        #ax = plt.axes(projection=ccrs.PlateCarree())
+        #ax.stock_img()
+        #plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', transform=ccrs.Geodetic());
+        #plt.show()
        
 
     def DrawCanvas(self, x, y, stationPoints):
@@ -812,7 +831,7 @@ if __name__ == '__main__':
     # The main frame object is created after creating the application object as the app is needed for the frame to execute
     frame = MainFrame(wx.Frame(None, -1, 'GNSS Data Processing'))
     frame.Show()
-    frame.Maximize(True)        # Maximize the window on first load
+    #frame.Maximize(True)        # Maximize the window on first load
     app.MainLoop()
   
 
