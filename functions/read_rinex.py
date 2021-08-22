@@ -9,6 +9,22 @@ Created on Tue May 25 19:06:25 2021
 
 # Reading the Ionospheric Parameters
 
+def getSatellitePRN(file_rinex):
+
+    svsPRN = []
+    
+    with open(file_rinex,'r') as file:
+        for line in file:
+            if 'END OF HEADER' in line:
+                for line in file:
+                    if line.startswith('G'):
+                        words = line.split()
+                        svsPRN.append(words[0])
+    
+    return list(set(svsPRN))
+    
+
+
 def readIonosphericParamters(file_rinex):
 
     ionosphericParam = []

@@ -13,6 +13,8 @@ from functions.ionosphericCorrectionSF import ionoCorrection as iono
 from functions.sat_orbit import SatelliteInfo
 from functions.read_rinex import readIonosphericParamters as readIono
 from functions.read_rinex import read_nav as rNav
+from functions.read_rinex import getSatellitePRN as gsp
+
 
 # Plotting modules
 import matplotlib
@@ -148,7 +150,8 @@ class MainFrame ( wx.Frame ):
             return
         MainFrame.onOpen.filePath = file.GetPath()
 
-        # MainFrame.onOpen.satellitePRN =   #Get the available satellite PRN in the file
+        #Get the available satellite PRN in the file
+        MainFrame.onOpen.satellitePRN =   gsp( MainFrame.onOpen.filePath )
 
         file.Destroy()
         
@@ -180,10 +183,6 @@ class orbitNoteBookPanel(wx.Panel):
         # Add the static box to the sizer
         noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
         
-
-        ############################################
-        # Satellite orbit parameter
-        ############################################
         
         # Widgets for entering parameters for satellite orbit modelling
         # Add spacer for a nicer view
@@ -197,6 +196,13 @@ class orbitNoteBookPanel(wx.Panel):
         
         self.prnTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         satSizer2.Add( self.prnTextCtrl, 0, wx.ALL, 5 )
+
+
+        self.orbitChoicesChoices = [ u" " ]
+        # self.orbitChoicesChoices.extend( MainFrame.onOpen.satellitePRN )
+        self.orbitChoices = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, self.orbitChoicesChoices, wx.CB_SORT )
+        satSizer2.Add( self.orbitChoices, 0, wx.ALL, 5 )
+
         
         
         satelliteStaticbox.Add( satSizer2, 0, wx.ALL, 5 )
@@ -218,8 +224,6 @@ class orbitNoteBookPanel(wx.Panel):
 
     def OrbitCompute(self, event):
         filePath = MainFrame.onOpen.filePath
-
-        ionoParams = readIono( filePath )
 
         svPRN = self.prnTextCtrl.GetValue()
 
