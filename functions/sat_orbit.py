@@ -47,7 +47,7 @@ class SatelliteInfo():
         nav=read_nav(nav_file)
         #print(nav)
 
-        file = open("Output.txt", "w")
+        file = open("Satellites_positions_output.txt", "w")
 
         # Time
         #t=int(input("Insert time: "))
@@ -210,10 +210,9 @@ class SatelliteInfo():
         val.sort()
         #print(val)
         #print su file
-        with open("Output.txt", "a") as file:
+        with open("Satellites_positions_output.txt", "a") as file:
             for item in val:
                 file.write("%s\n" % item)
-
 
         #graph
         prn_used='G'+str(self.sv_number)
@@ -221,22 +220,23 @@ class SatelliteInfo():
         sv_x=[]
         sv_y=[]
         sv_z=[]
-
+        count=0
+        current_epoch=...
         for item in val:
             if item[1]==prn_used:
                 #print(item)
                 sv_x.append(item[2])
                 sv_y.append(item[3])
                 sv_z.append(item[4])
-
-        # print(prn_used)
-        # print(sv_x)
-        # print(sv_y)
-        # print(sv_z)
-
+                if count==0:
+                    self.first_epoch=item[0]
+                    count +=1
+                else:
+                    current_epoch=item[0]
+        self.last_epoch=current_epoch
 
         #convert to geodetic coordinates
-        #check righ oarameters
+        #check righ parameters
         self.sv_lat=[]
         self.sv_long=[]
         for i in range(1, len(sv_x)+1):
@@ -261,6 +261,3 @@ class SatelliteInfo():
             
             self.sv_lat.append(lat_deg)
             self.sv_long.append(long_deg)
-
-        
-    
