@@ -262,11 +262,8 @@ class orbitNoteBookPanel(wx.Panel):
             dlg.Destroy()
             return
 
-        
-     
-    
 
-        
+# ------------------------------- Ionospheric Error Parameter ------------------------------#             
 
 class ionosphereNoteBookPanel(wx.Panel):
     def __init__(self, parent):
@@ -310,13 +307,13 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.timeStaticText.Wrap( -1 )
         timeSizer.Add( self.timeStaticText, 0, wx.ALL, 5 )
 
-        self.timeHHControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Hour", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=24, initial=0)
+        self.timeHHControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=24, initial=0)
         timeSizer.Add( self.timeHHControl, 0, wx.ALL, 5 )
 
-        self.timeMMControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.timeMMControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0)
         timeSizer.Add( self.timeMMControl, 0, wx.ALL, 5 )
 
-        self.timeSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Sec", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.timeSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0)
         timeSizer.Add( self.timeSSControl, 0, wx.ALL, 5 )
         
        
@@ -333,13 +330,13 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.elevStaticText.Wrap( -1 )
         elevSizer.Add( self.elevStaticText, 0, wx.ALL, 5 )
 
-        self.elevDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Deg", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=90, initial=0)
+        self.elevDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=90, initial=0 )
         elevSizer.Add( self.elevDegControl, 0, wx.ALL, 5 )
 
-        self.elevMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.elevMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
         elevSizer.Add( self.elevMinControl, 0, wx.ALL, 5 )
 
-        self.elevSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Sec", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.elevSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001)
         elevSizer.Add( self.elevSSControl, 0, wx.ALL, 5 )
 
         ionosphereStaticbox.Add( elevSizer, 0, 0, 5 )
@@ -355,13 +352,13 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.azStaticText.Wrap( -1 )
         azimuthSizer.Add( self.azStaticText, 0, wx.ALL, 5 )
 
-        self.azDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Deg", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=-180, max=180, initial=0)
+        self.azDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-180, max=180, initial=0 )
         azimuthSizer.Add( self.azDegControl, 0, wx.ALL, 5 )
 
-        self.azMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.azMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
         azimuthSizer.Add( self.azMinControl, 0, wx.ALL, 5 )
 
-        self.azSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Sec", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.azSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001)
         azimuthSizer.Add( self.azSSControl, 0, wx.ALL, 5 )
 
  
@@ -380,13 +377,13 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.longStaticText.Wrap( -1 )
         longSizer.Add( self.longStaticText, 0, wx.ALL, 5 )
         
-        self.longDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Deg", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=-180, max=180, initial=0)
+        self.longDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-180, max=180, initial=0 )
         longSizer.Add( self.longDegControl, 0, wx.ALL, 5 )
 
-        self.longMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.longMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
         longSizer.Add( self.longMinControl, 0, wx.ALL, 5 )
 
-        self.longSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Sec", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.longSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP , min=0, max=60, initial=0, inc=0.001)
         longSizer.Add( self.longSSControl, 0, wx.ALL, 5 )
         
         
@@ -403,13 +400,13 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.latStaticText.Wrap( -1 )
         latitudeSizer.Add( self.latStaticText, 0, wx.ALL, 5 )
         
-        self.latDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Deg", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=-90, max=90, initial=0)
+        self.latDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-90, max=90, initial=0 )
         latitudeSizer.Add( self.latDegControl, 0, wx.ALL, 5 )
 
-        self.latMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.latMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
         latitudeSizer.Add( self.latMinControl, 0, wx.ALL, 5 )
 
-        self.latSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Sec", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, min=0, max=60, initial=0)
+        self.latSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001 )
         latitudeSizer.Add( self.latSSControl, 0, wx.ALL, 5 )
         
         
@@ -465,7 +462,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             dlg.Destroy()
             return
         
-
+        # ---------------------COMPUTE IONO CORR-----------------------------------------
         ionoParams = readIono( filePath )
 
         if len(ionoParams) == 0:
@@ -474,7 +471,8 @@ class ionosphereNoteBookPanel(wx.Panel):
             dlg.Destroy()
             return
 
-
+        
+        # ---------------------PLOT IONO MAP -----------------------------------------
         if self.choice.GetStringSelection() == 'Station analysis':
             elevation = np.linspace(0, 90, 181)
             azimuth = np.linspace(-180, 180, 721)
@@ -489,6 +487,45 @@ class ionosphereNoteBookPanel(wx.Panel):
                     stationPoints[elev][azim] = iono(latitude, longitude, azimuth[azim], elevation[elev], time, ionoParams[0])
             
             x,y = np.meshgrid(azimuth, elevation)
+
+            x = x * np.pi / 180
+            y = np.flip( y * np.pi / 180, 1 )
+
+            stationPoints = np.flip( stationPoints, (0,1) )
+
+            fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
+            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
+            ax2.set_theta_zero_location('S')
+            ax2.set_theta_direction(-1)
+            ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
+            ax2.set_ylim(0, np.pi/2)
+
+
+ 
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
            
         else:
             elevation = self.elevDegControl.GetValue() + self.elevMinControl.GetValue() / 60 + self.elevSSControl.GetValue() / 3600
@@ -507,20 +544,13 @@ class ionosphereNoteBookPanel(wx.Panel):
             x,y = np.meshgrid(longitude, latitude)
             
         
-        fig1, ax2 = plt.subplots(constrained_layout=False)
+            fig1, ax2 = plt.subplots(constrained_layout=False)
 
-        worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
+            worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
 
-        CS = ax2.contourf(x, y, stationPoints, 1000, cmap=cm.rainbow)
-    
-        ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
-       
+            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
         
-
-        if self.choice.GetStringSelection() == 'Station analysis':
-            ax2.set_xlabel('Azimuth (\u00B0)')
-            ax2.set_ylabel('Elevation (\u00B0)')
-        else:
+            ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
             ax2.set_xlabel('Longitude (\u00B0)')
             ax2.set_ylabel('Latitude (\u00B0)')
             ax2.set_xlim([-180, 180])
