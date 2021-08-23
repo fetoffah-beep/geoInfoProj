@@ -7,6 +7,7 @@ import wx.xrc
 import wx.adv
 import geopandas as gpd
 import numpy as np
+from wx.html import HtmlWindow
 
 # Import defined functions
 from functions.ionosphericCorrectionSF import ionoCorrection as iono
@@ -138,7 +139,7 @@ class MainFrame ( wx.Frame ):
         # self.Bind( wx.EVT_MENU, self.onOrbit, id = self.satelliteOrtbitItem.GetId() )
         # self.Bind( wx.EVT_MENU, self.ionoModel, id = self.ionosphericModel.GetId() )
         # self.Bind( wx.EVT_MENU, self.helpContent, id = self.helpContentMenuItem.GetId() )
-        # self.Bind( wx.EVT_MENU, self.aboutPage, id = self.aboutMenuItem.GetId() )
+        self.Bind( wx.EVT_MENU, self.aboutPage, id = self.aboutMenuItem.GetId() )
 
         
     def __del__( self ):
@@ -163,7 +164,11 @@ class MainFrame ( wx.Frame ):
             return
 
 
-        
+    def aboutPage(self, event):
+        dlg = AboutPage(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
         
     # def helpContent( self, event ):
     #     pass
@@ -172,7 +177,11 @@ class MainFrame ( wx.Frame ):
         self.Close()
 
 
-
+class AboutPage(wx.Dialog):
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, id = wx.ID_ANY, title = 'About GNSS Data Processing SOFTWARE', pos = wx.DefaultPosition, size = wx.Size( 350,410 ), style = wx.DEFAULT_DIALOG_STYLE )
+        html  = wx.html.HtmlWindow(self)
+        html.LoadPage(u"functions/about.html")
 
 
 ###########################################################################
