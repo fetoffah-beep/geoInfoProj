@@ -145,15 +145,25 @@ class MainFrame ( wx.Frame ):
         pass
 
     def onOpen (self, event):
-        file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx| All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
-        if file.ShowModal() != wx.ID_OK:
+        try:
+            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx| All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+            if file.ShowModal() != wx.ID_OK:
+                return
+            MainFrame.onOpen.filePath = file.GetPath()
+
+            #Get the available satellite PRN in the file
+            MainFrame.onOpen.satellitePRN =   gsp( MainFrame.onOpen.filePath )
+
+            file.Destroy()
+
+        except Exception as err:
+            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
             return
-        MainFrame.onOpen.filePath = file.GetPath()
 
-        #Get the available satellite PRN in the file
-        MainFrame.onOpen.satellitePRN =   gsp( MainFrame.onOpen.filePath )
 
-        file.Destroy()
+        
         
     # def helpContent( self, event ):
     #     pass
@@ -223,22 +233,36 @@ class orbitNoteBookPanel(wx.Panel):
 
 
     def OrbitCompute(self, event):
-        filePath = MainFrame.onOpen.filePath
+        try:
+            filePath = MainFrame.onOpen.filePath
+            if os.path.splitext(filePath)[1] != '.rnx':
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
 
-        svPRN = self.prnTextCtrl.GetValue()
+            svPRN = self.prnTextCtrl.GetValue()
 
-        satelliteOrbit = SatelliteInfo( filePath, svPRN )
+            satelliteOrbit = SatelliteInfo( filePath, svPRN )
 
-        ax = plt.axes(projection=ccrs.PlateCarree())
-        ax.stock_img()
+            ax = plt.axes(projection=ccrs.PlateCarree())
+            ax.stock_img()
+            
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', transform=ccrs.Geodetic())
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(satelliteOrbit.first_epoch)
+            last_epc=str(satelliteOrbit.last_epoch)
+            plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            #plt.suptitle()
+            plt.show()
+
+        except Exception as err:
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         
-        plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', transform=ccrs.Geodetic())
-        font1={'family':'serif','color':'black','size':15}
-        first_epc=str(satelliteOrbit.first_epoch)
-        last_epc=str(satelliteOrbit.last_epoch)
-        plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
-        #plt.suptitle()
-        plt.show()
      
     
 
@@ -427,7 +451,28 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.Layout()
 
     def IonosphereCompute( self, event ):
-        filePath = MainFrame.onOpen.filePath
+        try:
+            filePath = MainFrame.onOpen.filePath
+            if os.path.splitext(filePath)[1] != '.rnx':
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+        except Exception as err:
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        
+
+        ionoParams = readIono( filePath )
+
+        if len(ionoParams) == 0:
+            dlg = wx.MessageDialog(None, 'Selected file does not have Ionospheric  Correction Parameters', 'Information', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
 
 
         if self.choice.GetStringSelection() == 'Station analysis':
@@ -439,19 +484,11 @@ class ionosphereNoteBookPanel(wx.Panel):
             
             stationPoints = np.zeros((len(elevation), len(azimuth)))
 
-            ionoParams = readIono( filePath )
-
-            if len(ionoParams) == 0:
-
-                return
-            
             for elev in range(len(elevation)):
                 for azim in range(len(azimuth)):
                     stationPoints[elev][azim] = iono(latitude, longitude, azimuth[azim], elevation[elev], time, ionoParams[0])
             
             x,y = np.meshgrid(azimuth, elevation)
-
-            
            
         else:
             elevation = self.elevDegControl.GetValue() + self.elevMinControl.GetValue() / 60 + self.elevSSControl.GetValue() / 3600
@@ -461,12 +498,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             time = self.timeHHControl.GetValue() * 60 * 60 + self.timeMMControl.GetValue() * 60 + self.timeSSControl.GetValue()
             
             stationPoints = np.zeros((len(latitude), len(longitude)))
-
-            ionoParams = readIono( filePath )
-
-            if len(ionoParams) == 0:
-                
-                return
+            
             
             for lat in range(len(latitude)):
                 for longit in range(len(longitude)):
