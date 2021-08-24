@@ -8,6 +8,7 @@ import wx.adv
 import geopandas as gpd
 import numpy as np
 from wx.html import HtmlWindow
+from wx.html import HtmlHelpController
 
 # Import defined functions
 from functions.ionosphericCorrectionSF import ionoCorrection as iono
@@ -113,13 +114,13 @@ class MainFrame ( wx.Frame ):
         ##########################################################
         
         self.noteBook = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.NB_FIXEDWIDTH|wx.NB_TOP )
-        paramNoteBookWindow = paramNoteBookPanel(self.noteBook)
+        # paramNoteBookWindow = paramNoteBookPanel(self.noteBook)
         orbitNoteBookWindow = orbitNoteBookPanel(self.noteBook)
         angleNoteBookWindow = angleNoteBookPanel(self.noteBook)
         ionoNoteBookWindow = ionosphereNoteBookPanel(self.noteBook)
         
         # Add the pages to the noteBook
-        self.noteBook.AddPage(paramNoteBookWindow, 'Input')
+        # self.noteBook.AddPage(paramNoteBookWindow, 'Input')
         self.noteBook.AddPage(orbitNoteBookWindow, 'Orbit')
         self.noteBook.AddPage(angleNoteBookWindow, 'Angles')
         self.noteBook.AddPage(ionoNoteBookWindow, 'Ionosphere')
@@ -142,7 +143,7 @@ class MainFrame ( wx.Frame ):
         self.Bind( wx.EVT_MENU, self.CloseFunc, id = self.closeMenu.GetId() )
         # self.Bind( wx.EVT_MENU, self.onOrbit, id = self.satelliteOrtbitItem.GetId() )
         # self.Bind( wx.EVT_MENU, self.ionoModel, id = self.ionosphericModel.GetId() )
-        # self.Bind( wx.EVT_MENU, self.helpContent, id = self.helpContentMenuItem.GetId() )
+        self.Bind( wx.EVT_MENU, self.helpContent, id = self.helpContentMenuItem.GetId() )
         self.Bind( wx.EVT_MENU, self.aboutPage, id = self.aboutMenuItem.GetId() )
 
         
@@ -173,9 +174,13 @@ class MainFrame ( wx.Frame ):
         dlg.ShowModal()
         dlg.Destroy()
 
-        
-    # def helpContent( self, event ):
-    #     pass
+  
+
+    def helpContent( self, event ):
+        html  = HtmlHelpController(style=wx.html.HF_TOOLBAR | wx.html.HF_CONTENTS | wx.html.HF_INDEX | wx.html.HF_SEARCH | wx.html.HF_PRINT, parentWindow=None)
+        html.AddBook(u"Document/User Manual.hhp")
+        html.Display(u"Document/Table Of Contents.hhc")
+        html.Show()
 
     def CloseFunc( self, event ):
         self.Close()
@@ -193,7 +198,6 @@ class AboutPage(wx.Dialog):
 ###########################################################################
 
 # -------------------------------Input-----------------------------------#
-######bozza
 class paramNoteBookPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)

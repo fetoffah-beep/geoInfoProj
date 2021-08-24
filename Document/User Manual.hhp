@@ -2,9 +2,11 @@
 Compatibility=1.1 or later
 Compiled file=User Manual.chm
 Contents file=Table of Contents.hhc
+Default topic=Welcome.html
 Display compile progress=No
 Index file=Index.hhk
 Language=0x809 English (United Kingdom)
+Title=UserGuide
 
 
 [INFOTYPES]
