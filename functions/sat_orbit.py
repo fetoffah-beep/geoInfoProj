@@ -4,20 +4,12 @@ Created on Tue May  4 16:17:05 2021
 
 @author: alega
 """
-import math
 
-# to add
-#clock correction
-#relativistic effect
-#check coordinate conversions
-from functions.read_rinex import read_nav
-import math
 
-# to add
-#clock correction
-#relativistic effect
-#check coordinate conversions
 from functions.read_rinex import read_nav
+from functions.cart2geod import cart2geod
+import math
+import numpy as np
 #from tabulate import tabulate
 
 # Poliastro modules
@@ -32,12 +24,14 @@ from astropy import units as u
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-
 class SatelliteInfo():
     """     Satellite orbit parameters    """
-    def __init__( self, file_name, svPRN):
+    def __init__( self, file_name, svPRN, x_ref, y_ref, z_ref, check):
         self.file_name = file_name
         self.sv_number = svPRN
+        self.x_ref=x_ref
+        self.y_ref=y_ref
+        self.z_ref=z_ref
 
 
     # def satOrbit(self):
@@ -94,7 +88,38 @@ class SatelliteInfo():
             transmission_time=item[34]
             #fit_interval=item[35]
             
-            
+            #rounding time to match sp3 
+            if second != 0:
+                sec_diff=60-second
+                second=0
+                minute=minute+1
+                if minute >= 60 :
+                    minute=minute-60
+                    hour += 1
+                if hour >= 24 :
+                    hour=hour-24
+                    day+= 1
+                if month==1 or month==3 or month==5 or month==7 or month==8 or month==10 or month==12:
+                    if day > 31:
+                        day=1
+                        month+= 1
+                elif month==4 or month==6 or month==9 or month==11:
+                    if day > 30:
+                        day=1
+                        month+=1
+                elif month==2 and year%4==0:
+                      if day > 29:
+                        day=1
+                        month+=1
+                elif month==2 and year%4!=0:
+                      if day > 28:
+                        day=1
+                        month+=1                         
+                if month > 12:
+                    month=1
+                    year += 1
+                toe=toe+sec_diff
+                
             
             t=[]
             #times (toe iniziale e +15s per 8 volte)
@@ -111,16 +136,47 @@ class SatelliteInfo():
             
             for x in range(1, 10):
                 
+                #to get 10 values, from start and then one every 15 minutes
                 min=minute+15*(x-1)
                 h=hour
+                d=day
+                m=month
+                yr=year
                 if min >= 60 and min <120:
                     min=min-60
                     h=h+1
                 if min>=120:
                     min=min-120
                     h=h+2
+                if h == 24 :
+                    h=h-24
+                    d+= 1
+                if h >= 25 :
+                    h=h-25
+                    d+= 1                   
+                if m==1 or m==3 or m==5 or m==7 or m==8 or m==10 or m==12:
+                    if d > 31:
+                        d=1
+                        m+= 1
+                elif m==4 or m==6 or m==9 or m==11:
+                    if d > 30:
+                        d=1
+                        m+=1
+                elif m==2 and yr%4==0:
+                      if d > 29:
+                        d=1
+                        m+=1
+                elif m==2 and yr%4!=0:
+                      if d > 28:
+                        d=1
+                        m+=1                         
+                if m > 12:
+                    m=1
+                    yr += 1
                     
-                # User equations for computing satellite position
+                #------User equations for computing satellite position------#
+                
+                #correcting time
                 time_from_eph_rt= t[x-1] - toe    #s
                 if time_from_eph_rt > 302400:
                     time_from_eph_rt -= 604800
@@ -195,10 +251,10 @@ class SatelliteInfo():
                   
                 #sat_values=[sv_prn, int(time_from_eph_rt), x, y, z, x_vel, y_vel, z_vel]
                 
-                #calcola epoch (year month day hour minute second)
-                epoch_print=[year, month, day, h, min, second]
+                #write epoch (year month day hour minute second)
+                epoch_print=[yr, m, d, h, min, second]
                 #print(eph)
-                #scrive su un array epoch + posizioni
+                #write on array epoch + positions
                 values=[epoch_print, sv_prn, x, y, z]
                 val.append(values)
 
@@ -214,17 +270,19 @@ class SatelliteInfo():
             for item in val:
                 file.write("%s\n" % item)
 
-        #graph
+        #splitting values into vectors
         prn_used='G'+str(self.sv_number)
         #print(prn_used)
         sv_x=[]
         sv_y=[]
         sv_z=[]
+        self.sv_epoch=[]
         count=0
         current_epoch=...
         for item in val:
             if item[1]==prn_used:
                 #print(item)
+                self.sv_epoch.append(item[0])
                 sv_x.append(item[2])
                 sv_y.append(item[3])
                 sv_z.append(item[4])
@@ -234,30 +292,71 @@ class SatelliteInfo():
                 else:
                     current_epoch=item[0]
         self.last_epoch=current_epoch
+        
+        
+        #----Preparing parameters for azimuth/elevation computations----#
+        if check is True:
+            (phi_ref, lambda_ref, h_ref)=cart2geod(float(x_ref), float(y_ref), float(z_ref))
+            R0=np.array([[-math.sin(lambda_ref),  math.cos(lambda_ref), 0], 
+                         [-math.sin(phi_ref)*math.cos(lambda_ref),  -math.sin(phi_ref)*math.sin(lambda_ref),   math.cos(phi_ref)], 
+                         [math.cos(phi_ref)*math.cos(lambda_ref),  math.cos(phi_ref)*math.sin(lambda_ref),  math.sin(phi_ref)]
+                    ])
+            self.sv_azimuth=[]
+            self.sv_elevation=[]
+        #---------------------------------------------------------------#
+        
 
-        #convert to geodetic coordinates
-        #check righ parameters
+        #-------Conversion to geodetic coordinates-------#
         self.sv_lat=[]
         self.sv_long=[]
         for i in range(1, len(sv_x)+1):
             x=sv_x[i-1]
             y=sv_y[i-1]
             z=sv_z[i-1]
-            a=6378137
-            f=1/298.257222100882711243
-            b=a-a*f
-            #e=math.sqrt((a**2-b**2)/a**2)
-            e_b=math.sqrt((a**2-b**2)/b**2)
-            r=math.sqrt(x**2+y**2)                  
-            psi=math.atan2(z,(r*math.sqrt(1-e**2)))
             
-            long=math.atan2(y,x)             #lambda         
-            lat=math.atan2((z+e_b**2*b*(math.sin(psi))**3),(r-e**2*a*(math.cos(psi))**3))   #phi
-            long_deg=long*180/3.14159265359
-            lat_deg=lat*180/3.14159265359
+            # a=6378137
+            # f=1/298.257222100882711243
+            # b=a-a*f
+            # #e=math.sqrt((a**2-b**2)/a**2)
+            # e_b=math.sqrt((a**2-b**2)/b**2)
+            # r=math.sqrt(x**2+y**2)                  
+            # psi=math.atan2(z,(r*math.sqrt(1-e**2)))
+            
+            # long=math.atan2(y,x)             #lambda         
+            # lat=math.atan2((z+e_b**2*b*(math.sin(psi))**3),(r-e**2*a*(math.cos(psi))**3))   #phi
+            
+            (lat, long, h)=cart2geod(float(x), float(y), float(z))
+            
+            long_deg=long*180/math.pi
+            lat_deg=lat*180/math.pi
             
             # R_n=a/math.sqrt(1-e**2*(math.sin(phi))**2)  
             # h=r/math.cos(phi) - R_n                   
             
             self.sv_lat.append(lat_deg)
             self.sv_long.append(long_deg)
+            
+            
+            #-------------Angles calculation--------------#
+            if check is True:
+                #conversion from GC baseline to LC
+                baseline=[x-float(x_ref), y-float(y_ref), z-float(z_ref)]
+                #enu=R0*baseline
+                lc=np.dot(R0, baseline)  #local cartesian coordinates
+                east=lc[0]
+                #print(east)
+                north=lc[1]
+                #print(north)
+                up=lc[2]
+                
+                #compute azimuth
+                azimuth=math.atan2(east, north)
+                azimuth_deg=azimuth*180/math.pi
+                self.sv_azimuth.append(azimuth_deg)
+                #compute elevation
+                elevation=math.atan2(up, math.sqrt(east**2 + north**2))
+                elevation_deg=elevation*180/math.pi
+                self.sv_elevation.append(elevation_deg)
+                
+                
+                
