@@ -19,7 +19,7 @@ def getSatellitePRN(file_rinex):
                 for line in file:
                     if line.startswith('G'):
                         words = line.split()
-                        svsPRN.append(words[0])
+                        svsPRN.append(words[0][1:3])
     
     return list(set(svsPRN))
     

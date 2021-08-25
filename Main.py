@@ -290,7 +290,15 @@ class orbitNoteBookPanel(wx.Panel):
                 dlg.Destroy()
                 return
 
-            svPRN = self.prnTextCtrl.GetValue()
+            userPRN = self.prnTextCtrl.GetValue()
+            availablePRN = MainFrame.onOpen.satellitePRN
+            availablePRN.sort()
+            
+            if userPRN not in availablePRN:
+                dlg = wx.MessageDialog(None, 'The SV PRN is not available. Available ones are: ' + ', '.join(availablePRN), 'PRN Unavilability', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
 
             satelliteOrbit = SatelliteInfo( filePath, svPRN, 0, 0, 0, False )
             
@@ -308,7 +316,7 @@ class orbitNoteBookPanel(wx.Panel):
             #plt.suptitle()
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx)/existing satellite has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -657,31 +665,6 @@ class ionosphereNoteBookPanel(wx.Panel):
             ax2.set_theta_direction(-1)
             ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
             ax2.set_ylim(0, np.pi/2)
-
-
- 
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
            
