@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
-from matplotlib.figure import Figure
+# from matplotlib.figure import Figure
 import cartopy.crs as ccrs
 matplotlib.use('WXAgg')
 
