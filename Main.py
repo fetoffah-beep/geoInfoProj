@@ -114,13 +114,11 @@ class MainFrame ( wx.Frame ):
         ##########################################################
         
         self.noteBook = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.NB_FIXEDWIDTH|wx.NB_TOP )
-        # paramNoteBookWindow = paramNoteBookPanel(self.noteBook)
         orbitNoteBookWindow = orbitNoteBookPanel(self.noteBook)
         angleNoteBookWindow = angleNoteBookPanel(self.noteBook)
         ionoNoteBookWindow = ionosphereNoteBookPanel(self.noteBook)
         
         # Add the pages to the noteBook
-        # self.noteBook.AddPage(paramNoteBookWindow, 'Input')
         self.noteBook.AddPage(orbitNoteBookWindow, 'Orbit')
         self.noteBook.AddPage(angleNoteBookWindow, 'Angles')
         self.noteBook.AddPage(ionoNoteBookWindow, 'Ionosphere')
@@ -197,36 +195,6 @@ class AboutPage(wx.Dialog):
 ##  Note Book Classes
 ###########################################################################
 
-# -------------------------------Input-----------------------------------#
-class paramNoteBookPanel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        # Create the sizer
-        noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
-        # Create the static box for receiving parameters for the functionalities
-        paramStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Open Navigation Message" ), wx.VERTICAL )
-        # Add the static box to the sizer
-        noteBookSizer.Add( paramStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
-        # Add spacer for a nicer view
-        paramStaticbox.AddSpacer(10)
-        
-        
-        # # Widgets for entering parameters for file opening
-        satSizer1 = wx.BoxSizer( wx.HORIZONTAL )
-        self.paramStaticText = wx.StaticText( paramStaticbox.GetStaticBox(), wx.ID_ANY, u"Select rinex file to process: ", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.paramStaticText.Wrap( -1 )
-        satSizer1.Add( self.paramStaticText, 0, wx.ALL, 5 )
-
-        
-        self.satelliteFilePicker = wx.FilePickerCtrl( paramStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"Rinex (*.rnx)|*.rnx| All files(*.)| *.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-        satSizer1.Add( self.satelliteFilePicker, 0, wx.TOP|wx.RIGHT|wx.LEFT, 5 )
-        paramStaticbox.Add( satSizer1, 0, wx.EXPAND, 5 )
-        #path=self.satelliteFilePicker.GetPath()
-
-         
-        self.SetSizer( noteBookSizer )
-        self.Layout()
-
 # -------------------------------Satellite orbit parameter------------------------------#             
 class orbitNoteBookPanel(wx.Panel):
     def __init__(self, parent):
@@ -292,7 +260,7 @@ class orbitNoteBookPanel(wx.Panel):
 
             svPRN = self.prnTextCtrl.GetValue()
 
-            satelliteOrbit = SatelliteInfo( filePath, svPRN, 0, 0, 0, False )
+            satelliteOrbit = SatelliteInfo( filePath, svPRN )
             
             plt.figure()
             ax = plt.axes(projection=ccrs.PlateCarree())
@@ -312,6 +280,7 @@ class orbitNoteBookPanel(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return
+        
 
 
 #---------------------------------Angles analysis---------------------------------#
