@@ -282,7 +282,7 @@ class orbitNoteBookPanel(wx.Panel):
 
     def OrbitCompute(self, event):
         try:
-            plt.clf()  #clears figure
+            #plt.clf()  #clears figure
             filePath = MainFrame.onOpen.filePath
             if os.path.splitext(filePath)[1] != '.rnx':
                 dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
@@ -292,8 +292,9 @@ class orbitNoteBookPanel(wx.Panel):
 
             svPRN = self.prnTextCtrl.GetValue()
 
-            satelliteOrbit = SatelliteInfo( filePath, svPRN )
-
+            satelliteOrbit = SatelliteInfo( filePath, svPRN, 0, 0, 0, False )
+            
+            plt.figure()
             ax = plt.axes(projection=ccrs.PlateCarree())
             ax.stock_img()
             #ax.coastlines()
@@ -305,7 +306,6 @@ class orbitNoteBookPanel(wx.Panel):
             last_epc=str(satelliteOrbit.last_epoch)
             plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
             #plt.suptitle()
-            plt.show()
 
         except Exception as err:
             dlg = wx.MessageDialog(None, 'No navigation file (.rnx)/existing satellite has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
@@ -388,21 +388,35 @@ class angleNoteBookPanel(wx.Panel):
         
         
     def AnglesCompute(self, event):
-        plt.clf()  #clears figure
-        filePath = MainFrame.onOpen.filePath
-        if os.path.splitext(filePath)[1] != '.rnx':
-            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+        try:
+            filePath = MainFrame.onOpen.filePath
+            if os.path.splitext(filePath)[1] != '.rnx':
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+            svPRN = self.prnTextCtrl.GetValue()
+            x = self.xTextCtrl.GetValue()
+            y = self.yTextCtrl.GetValue()
+            z = self.zTextCtrl.GetValue()
+
+            angles = SatelliteInfo( filePath, svPRN, x, y, z, True )
+            plt.figure()
+            #plt.plot(angles.sv_azimuth, angles.sv_elevation, 'r', linewidth=3)
+            plt.polar(angles.sv_azimuth, angles.sv_elevation)
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(angles.first_epoch)
+            last_epc=str(angles.last_epoch)
+            plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            #plt.xlabel('Azimuth', size=12)
+            #plt.ylabel('Elevation', size=12)
+
+        except Exception as err:
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx)/existing satellite has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
-            return
-
-        svPRN = self.prnTextCtrl.GetValue()
-        x = self.xTextCtrl.GetValue()
-        y = self.yTextCtrl.GetValue()
-        z = self.zTextCtrl.GetValue()
-
-        Angles = SatelliteInfo( filePath, svPRN, x, y, z )
-        #plot using Angles.epochs, Angles.azimuth and Angles.elevation
+            return 
 
         
         
