@@ -292,7 +292,7 @@ class orbitNoteBookPanel(wx.Panel):
 
             svPRN = self.prnTextCtrl.GetValue()
 
-            satelliteOrbit = SatelliteInfo( filePath, svPRN )
+            satelliteOrbit = SatelliteInfo( filePath, svPRN, 0, 0, 0, False )
             
             plt.figure()
             ax = plt.axes(projection=ccrs.PlateCarree())
