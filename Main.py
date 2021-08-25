@@ -269,7 +269,7 @@ class orbitNoteBookPanel(wx.Panel):
                 dlg.Destroy()
                 return
 
-            satelliteOrbit = SatelliteInfo( filePath, svPRN, 0, 0, 0, False )
+            satelliteOrbit = SatelliteInfo( filePath, userPRN, 0, 0, 0, False )
             
             plt.figure()
             ax = plt.axes(projection=ccrs.PlateCarree())
@@ -281,7 +281,7 @@ class orbitNoteBookPanel(wx.Panel):
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(satelliteOrbit.first_epoch)
             last_epc=str(satelliteOrbit.last_epoch)
-            plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            plt.title('Satellite G'+str(userPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
             #plt.suptitle()
 
         except Exception as err:
@@ -289,7 +289,7 @@ class orbitNoteBookPanel(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
 
 
 #---------------------------------Angles analysis---------------------------------#
