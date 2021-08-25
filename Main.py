@@ -26,6 +26,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 from matplotlib.figure import Figure
 import cartopy.crs as ccrs
+from astroplan.plots import plot_sky
 matplotlib.use('WXAgg')
 
 
