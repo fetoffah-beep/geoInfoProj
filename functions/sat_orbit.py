@@ -120,8 +120,7 @@ class SatelliteInfo():
                 if month > 12:
                     month=1
                     year += 1
-                # toe=toe+sec_diff
-                
+                    
             
             t=[]
             #times (toe iniziale e +15s per 8 volte)
