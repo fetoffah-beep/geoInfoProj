@@ -29,7 +29,9 @@ def ionoCorrection(phi_u, lambda_u, A, E, GPStime, ionoParams):
     lambda_u = lambda_u / 180;
     A = A / 180;
     E = E / 180;
-
+    # Speed of light
+    c = 2.99792458 * 10**8
+    # c = math.pow((1575.42/1227.6 ), 2)
 
     alpha = ionoParams[0:3]
     beta = ionoParams[4:7]
@@ -37,7 +39,7 @@ def ionoCorrection(phi_u, lambda_u, A, E, GPStime, ionoParams):
     # Psi is the Earth's central angle between the user position and the earth projection of ionospheric intersection point
     psi = 0.0137 / (E + 0.11) - 0.022       
     
-    phi_i = phi_u + psi * math.cos(A)
+    phi_i = phi_u + psi * math.cos(A * math.pi)
     
     if abs(phi_i) <= 0.416:
         phi_i = phi_i
@@ -48,10 +50,10 @@ def ionoCorrection(phi_u, lambda_u, A, E, GPStime, ionoParams):
     
     
     # geodetic longitude of the earth projection of the ionospheric intersection point
-    lambda_i = lambda_u + psi * math.sin(A) / math.cos(phi_i)
+    lambda_i = lambda_u + psi * math.sin(A * math.pi) / math.cos(phi_i * math.pi)
     
     # geomagnetic latitude of the earth projection of the ionospheric intersection point
-    phi_m = phi_i + 0.064 * math.cos(lambda_i - 1.617)
+    phi_m = phi_i + 0.064 * math.cos((lambda_i - 1.617) * math.pi)
     
     # The local time in seconds
     t = 4.32 * 10**4 * lambda_i + GPStime
@@ -82,8 +84,8 @@ def ionoCorrection(phi_u, lambda_u, A, E, GPStime, ionoParams):
         AMP = 0
     
     if abs(x) >= 1.57:
-        T_iono = F * 5 * 10**-9
+        T_iono = c *  F * 5 * 10**-9
     else:
-        T_iono = F * ((5 * 10**-9) + AMP * (1 - (x**2/2) + (x**4 / 24)))
+        T_iono = c * F * ((5 * 10**-9) + AMP * (1 - (x**2/2) + (x**4 / 24)))
     
     return T_iono

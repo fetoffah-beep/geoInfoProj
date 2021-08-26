@@ -24,7 +24,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
-# from matplotlib.figure import Figure
 import cartopy.crs as ccrs
 from astroplan.plots import plot_sky
 matplotlib.use('WXAgg')
@@ -99,12 +98,12 @@ class MainFrame ( wx.Frame ):
 
 
         # Create accelerator for the menu buttons, i.e, the shortcuts
-        shortCuts = [wx.AcceleratorEntry() for i in range(5)]
+        shortCuts = [wx.AcceleratorEntry() for i in range(3)]
         shortCuts[0].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_O, self.openMenu.GetId())
         shortCuts[1].Set(wx.ACCEL_ALT, wx.WXK_F4, self.closeMenu.GetId())
         # shortCuts[2].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_K, self.satelliteOrtbitItem.GetId())
         # shortCuts[3].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_I, self.ionosphericModel.GetId())
-        shortCuts[4].Set(wx.ACCEL_NORMAL, wx.WXK_F1, self.helpContentMenuItem.GetId())
+        shortCuts[2].Set(wx.ACCEL_NORMAL, wx.WXK_F1, self.helpContentMenuItem.GetId())
 
         accel = wx.AcceleratorTable(shortCuts)
         self.SetAcceleratorTable(accel) 
@@ -162,7 +161,7 @@ class MainFrame ( wx.Frame ):
             file.Destroy()
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx / .yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -292,7 +291,7 @@ class orbitNoteBookPanel(wx.Panel):
 
 
 
-#---------------------------------Angles analysis---------------------------------#
+#---------------------------------Angles Map---------------------------------#
 class angleNoteBookPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
@@ -300,7 +299,7 @@ class angleNoteBookPanel(wx.Panel):
         # Create the sizer
         noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
         # Create the static box for receiving parameters for the functionalities
-        satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Angles Analysis" ), wx.VERTICAL )
+        satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Angles Map" ), wx.VERTICAL )
         # Add the static box to the sizer
         noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
         
@@ -426,7 +425,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.choiceStaticText.Wrap( -1 )
         modeSelectionSizer.Add( self.choiceStaticText, 0, wx.ALL, 5 )
         
-        choiceChoices = [ u"Globe analysis", u"Station analysis" ]
+        choiceChoices = [ u"Globe Map", u"Local Map" ]
         self.choice = wx.Choice( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
         modeSelectionSizer.Add( self.choice, 0, wx.ALL, 5 )
 
@@ -609,7 +608,7 @@ class ionosphereNoteBookPanel(wx.Panel):
 
         
         # ---------------------PLOT IONO MAP -----------------------------------------
-        if self.choice.GetStringSelection() == 'Station analysis':
+        if self.choice.GetStringSelection() == 'Local Map':
             elevation = np.linspace(0, 90, 181)
             azimuth = np.linspace(-180, 180, 721)
             longitude = self.longDegControl.GetValue() + self.longMinControl.GetValue() / 60 + self.longSSControl.GetValue() / 3600
@@ -631,13 +630,15 @@ class ionosphereNoteBookPanel(wx.Panel):
 
             fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
             CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
-            ax2.set_theta_zero_location('S')
+            ax2.set_theta_zero_location('N')
             ax2.set_theta_direction(-1)
             ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
             ax2.set_ylim(0, np.pi/2)
+            ax2.set_rticks([np.pi/2, np.pi/2.4, np.pi/3, np.pi/4, np.pi/6, np.pi/12, 0])
+            ax2.set_xticklabels(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])
+            ax2.set_yticklabels(['0\u00B0', '15\u00B0', '30\u00B0', '45\u00B0', '60\u00B0', '75\u00B0', '90\u00B0'])
+            
 
-
-           
         else:
             elevation = self.elevDegControl.GetValue() + self.elevMinControl.GetValue() / 60 + self.elevSSControl.GetValue() / 3600
             azimuth = self.azDegControl.GetValue() + self.azMinControl.GetValue() / 60 + self.azSSControl.GetValue() / 3600
@@ -654,10 +655,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             
             x,y = np.meshgrid(longitude, latitude)
             
-        
             fig1, ax2 = plt.subplots(constrained_layout=False)
-
-            worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
 
             CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
         
@@ -666,19 +664,18 @@ class ionosphereNoteBookPanel(wx.Panel):
             ax2.set_ylabel('Latitude (\u00B0)')
             ax2.set_xlim([-180, 180])
             ax2.set_ylim([-90, 90])
+            worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
             worldMap.plot(ax=ax2, facecolor='none', edgecolor='black', lw=0.15)
 
         cbar = plt.colorbar(CS)
-  
-       
-
+        cbar.ax.set_ylabel('[m]')
         ionoMap = plt.show()
         
 
 
     def OnChoice (self, event):
         self.user_choice = event.GetString()
-        if self.user_choice == 'Station analysis':
+        if self.user_choice == 'Local Map':
             self.timeStaticText.Show(True)
             self.timeHHControl.Show(True)
             self.timeMMControl.Show(True)
