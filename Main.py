@@ -71,15 +71,15 @@ class MainFrame ( wx.Frame ):
         
         self.MenuBar.Append( self.FileMenu, u"&File" ) 
         
-        # Menu for the modules and its items
-        self.modulesMenu = wx.Menu()
-        self.satelliteOrtbitItem = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Satellite Orbit", wx.EmptyString, wx.ITEM_NORMAL )
-        self.modulesMenu.Append( self.satelliteOrtbitItem )
+        # # Menu for the modules and its items
+        # self.modulesMenu = wx.Menu()
+        # self.satelliteOrtbitItem = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Satellite Orbit", wx.EmptyString, wx.ITEM_NORMAL )
+        # self.modulesMenu.Append( self.satelliteOrtbitItem )
         
-        self.ionosphericModel = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Ionospheric Model", wx.EmptyString, wx.ITEM_NORMAL )
-        self.modulesMenu.Append( self.ionosphericModel )
+        # self.ionosphericModel = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Ionospheric Model", wx.EmptyString, wx.ITEM_NORMAL )
+        # self.modulesMenu.Append( self.ionosphericModel )
         
-        self.MenuBar.Append( self.modulesMenu, u"&Modules" ) 
+        # self.MenuBar.Append( self.modulesMenu, u"&Modules" ) 
         
         # Help menu for the about page and help contents
         self.HelpMenu = wx.Menu()
@@ -102,8 +102,8 @@ class MainFrame ( wx.Frame ):
         shortCuts = [wx.AcceleratorEntry() for i in range(5)]
         shortCuts[0].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_O, self.openMenu.GetId())
         shortCuts[1].Set(wx.ACCEL_ALT, wx.WXK_F4, self.closeMenu.GetId())
-        shortCuts[2].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_K, self.satelliteOrtbitItem.GetId())
-        shortCuts[3].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_I, self.ionosphericModel.GetId())
+        # shortCuts[2].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_K, self.satelliteOrtbitItem.GetId())
+        # shortCuts[3].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_I, self.ionosphericModel.GetId())
         shortCuts[4].Set(wx.ACCEL_NORMAL, wx.WXK_F1, self.helpContentMenuItem.GetId())
 
         accel = wx.AcceleratorTable(shortCuts)
