@@ -89,7 +89,9 @@ class SatelliteInfo():
             #fit_interval=item[35]
             
             #rounding time to match sp3 
+            sec_diff=0
             if second != 0:
+                #continue
                 sec_diff=60-second
                 second=0
                 minute=minute+1
@@ -118,13 +120,15 @@ class SatelliteInfo():
                 if month > 12:
                     month=1
                     year += 1
-                toe=toe+sec_diff
-                
+                    
             
             t=[]
             #times (toe iniziale e +15s per 8 volte)
             for i in range(1, 10):
-                t.append(toe+900*(i-1))
+                if sec_diff !=0:
+                    t.append(toe+sec_diff+900*(i-1))
+                else: 
+                    t.append(toe+900*(i-1))
             #print(t)    
             
             # Fixed values
