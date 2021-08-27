@@ -167,6 +167,52 @@ class MainFrame ( wx.Frame ):
             return
 
 
+        #Checks on file type and other warnings
+        with open(MainFrame.onOpen.filePath,'r') as file:
+            for line in file:
+                if 'RINEX VERSION' in line:
+                    word = line.split()
+
+                    # Check the rinex version of file
+                    if float(word[0]) > 3.05:
+                        dlg = wx.MessageDialog(None, 'Rinex file version is not supported', 'File Version Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return
+
+                    # check that the file is a navigation message file
+                    if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) and ((word[1][0]!='N') and (word[5][0]!='G')):
+                        print(word[1], word[3], word[1][0], word[5][0])
+                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type111', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return
+
+                # check that at least one SV message is in the file
+                if 'END OF HEADER' in line:
+                    for line in file:
+                        if len(MainFrame.onOpen.satellitePRN)==0:
+                            dlg = wx.MessageDialog(None, 'No navigation data was found in the selected file', 'Empty Nav File', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                            dlg.ShowModal()
+                            dlg.Destroy()
+                            return
+
+
+        # Check of ionospheric parameters
+        ionoParams = readIono( MainFrame.onOpen.filePath )
+
+        if len(ionoParams) == 0:
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return                
+                        
+                    
+
+
+
+
+
     def aboutPage(self, event):
         dlg = AboutPage(self)
         dlg.ShowModal()
