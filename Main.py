@@ -206,12 +206,7 @@ class MainFrame ( wx.Frame ):
             dlg.ShowModal()
             dlg.Destroy()
             return                
-                        
-                    
-
-
-
-
+   
 
     def aboutPage(self, event):
         dlg = AboutPage(self)
@@ -675,7 +670,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             stationPoints = np.flip( stationPoints, (0,1) )
 
             fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
-            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
+            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
             ax2.set_theta_zero_location('N')
             ax2.set_theta_direction(-1)
             ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
@@ -703,7 +698,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             
             fig1, ax2 = plt.subplots(constrained_layout=False)
 
-            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.rainbow)
+            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
         
             ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
             ax2.set_xlabel('Longitude (\u00B0)')
@@ -726,11 +721,11 @@ class ionosphereNoteBookPanel(wx.Panel):
             self.timeHHControl.Show(True)
             self.timeMMControl.Show(True)
             self.timeSSControl.Show(True)
-            self.elevStaticText.Show(True)
+            self.elevStaticText.Show(False)
             self.elevDegControl.Show(False)
             self.elevMinControl.Show(False)
             self.elevSSControl.Show(False)
-            self.azStaticText.Show(True)
+            self.azStaticText.Show(False)
             self.azDegControl.Show(False)
             self.azMinControl.Show(False)
             self.azSSControl.Show(False)
@@ -755,11 +750,11 @@ class ionosphereNoteBookPanel(wx.Panel):
             self.azDegControl.Show(True)
             self.azMinControl.Show(True)
             self.azSSControl.Show(True)
-            self.longStaticText.Show(True)
+            self.longStaticText.Show(False)
             self.longDegControl.Show(False)
             self.longMinControl.Show(False)
             self.longSSControl.Show(False)
-            self.latStaticText.Show(True)
+            self.latStaticText.Show(False)
             self.latDegControl.Show(False)
             self.latMinControl.Show(False)
             self.latSSControl.Show(False)
