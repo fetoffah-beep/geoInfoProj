@@ -6,11 +6,11 @@ Created on Tue May  4 17:09:28 2021
 """
 
 import math
-import rotationParam
+import functions.rotationParam as rp
 
 def geod2cart(phi, lam, h):
     #Define the East-West curvature radius
-    Rn = rotationParam.a / (math.sqrt(1 - rotationParam.eSquared * (pow(math.sin(phi), 2))))
+    Rn = rp.a / (math.sqrt(1 - rp.eSquared * (pow(math.sin(phi), 2))))
     
     #Easting
     x = (Rn + h) * math.cos(phi) * math.cos(lam)
@@ -19,5 +19,5 @@ def geod2cart(phi, lam, h):
     y = (Rn+ h) * math.cos(phi) * math.sin(lam)
     
     #Height
-    z = (Rn * (1 - rotationParam.eSquared) + h) * math.sin(phi)   
+    z = (Rn * (1 - rp.eSquared) + h) * math.sin(phi)   
     return (x, y, z)
