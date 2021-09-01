@@ -8,6 +8,7 @@ Created on Tue May  4 16:17:05 2021
 
 from functions.read_rinex import read_nav
 from functions.cart2geod import cart2geod
+from functions.geod2cart import geod2cart
 import math
 import numpy as np
 #from tabulate import tabulate
@@ -26,12 +27,12 @@ import cartopy.crs as ccrs
 
 class SatelliteInfo():
     """     Satellite orbit parameters    """
-    def __init__( self, file_name, svPRN, x_ref, y_ref, z_ref, check):
+    def __init__( self, file_name, svPRN, long_ref, lat_ref, h_ref, check):
         self.file_name = file_name
         self.sv_number = svPRN
-        self.x_ref=x_ref
-        self.y_ref=y_ref
-        self.z_ref=z_ref
+        self.long_ref=long_ref
+        self.lat_ref=lat_ref
+        self.h_ref=h_ref
 
 
     # def satOrbit(self):
@@ -138,10 +139,9 @@ class SatelliteInfo():
             earth_grav_const=3.986005 * 10**14   #m^3/s^2
             earth_rotation_rate=7.2921151467 * 10**(-5)   #WGS84   #rad/s
             
-            for x in range(1, 10):
-                
+            for k in range(1, 10):
                 #to get 10 values, from start and then one every 15 minutes
-                min=minute+15*(x-1)
+                min=minute+15*(k-1)
                 h=hour
                 d=day
                 m=month
@@ -156,7 +156,7 @@ class SatelliteInfo():
                     h=h-24
                     d+= 1
                 if h >= 25 :
-                    h=h-25
+                    h=h-24
                     d+= 1                   
                 if m==1 or m==3 or m==5 or m==7 or m==8 or m==10 or m==12:
                     if d > 31:
@@ -181,7 +181,7 @@ class SatelliteInfo():
                 #------User equations for computing satellite position------#
                 
                 #correcting time
-                time_from_eph_rt= t[x-1] - toe    #s
+                time_from_eph_rt= t[k-1] - toe    #s
                 if time_from_eph_rt > 302400:
                     time_from_eph_rt -= 604800
                 elif time_from_eph_rt < -302400:
@@ -261,6 +261,7 @@ class SatelliteInfo():
                 #write on array epoch + positions
                 values=[epoch_print, sv_prn, x, y, z]
                 val.append(values)
+                
 
         #riordina array
         # def sort_key(values):
@@ -297,13 +298,17 @@ class SatelliteInfo():
                     current_epoch=item[0]
         self.last_epoch=current_epoch
         
-        
+                
         #----Preparing parameters for azimuth/elevation computations----#
+        #cartesian coordinates of ref. point
         if check is True:
-            (phi_ref, lambda_ref, h_ref)=cart2geod(float(x_ref), float(y_ref), float(z_ref))
-            R0=np.array([[-math.sin(lambda_ref),  math.cos(lambda_ref), 0], 
-                         [-math.sin(phi_ref)*math.cos(lambda_ref),  -math.sin(phi_ref)*math.sin(lambda_ref),   math.cos(phi_ref)], 
-                         [math.cos(phi_ref)*math.cos(lambda_ref),  math.cos(phi_ref)*math.sin(lambda_ref),  math.sin(phi_ref)]
+            lat_ref_rad=float(lat_ref)*math.pi/180   #radians for calculation
+            long_ref_rad=float(long_ref)*math.pi/180
+            h_ref_rad=float(h_ref)*math.pi/180
+            (x_ref, y_ref, z_ref)=geod2cart(float(lat_ref_rad), float(long_ref_rad), float(h_ref_rad))
+            R0=np.array([[-math.sin(long_ref_rad),  math.cos(long_ref_rad), 0], 
+                         [-math.sin(lat_ref_rad)*math.cos(long_ref_rad),  -math.sin(lat_ref_rad)*math.sin(long_ref_rad),   math.cos(lat_ref_rad)], 
+                         [math.cos(lat_ref_rad)*math.cos(long_ref_rad),  math.cos(lat_ref_rad)*math.sin(long_ref_rad),  math.sin(lat_ref_rad)]
                     ])
             self.sv_azimuth=[]
             self.sv_elevation=[]
@@ -331,8 +336,8 @@ class SatelliteInfo():
             
             (lat, long, h)=cart2geod(float(x), float(y), float(z))
             
-            long_deg=long*180/math.pi
-            lat_deg=lat*180/math.pi
+            long_deg=long*180/math.pi   #lambda
+            lat_deg=lat*180/math.pi   #phi
             
             # R_n=a/math.sqrt(1-e**2*(math.sin(phi))**2)  
             # h=r/math.cos(phi) - R_n                   
@@ -344,9 +349,11 @@ class SatelliteInfo():
             #-------------Angles calculation--------------#
             if check is True:
                 #conversion from GC baseline to LC
-                baseline=[x-float(x_ref), y-float(y_ref), z-float(z_ref)]
+                #baseline=[x-float(x_ref), y-float(y_ref), z-float(z_ref)]
+                baseline=[x-x_ref, y-y_ref, z-z_ref]
                 #enu=R0*baseline
                 lc=np.dot(R0, baseline)  #local cartesian coordinates
+                #print(lc)
                 east=lc[0]
                 #print(east)
                 north=lc[1]
