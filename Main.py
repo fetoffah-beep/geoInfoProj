@@ -252,7 +252,7 @@ class orbitNoteBookPanel(wx.Panel):
         #Text
         #satelliteStaticbox.AddSpacer(10)
         satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m):", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.refStaticText.Wrap( -1 )
         satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
         satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
