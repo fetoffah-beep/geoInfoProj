@@ -26,6 +26,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 import cartopy.crs as ccrs
 from astroplan.plots import plot_sky
+from datetime import datetime
 matplotlib.use('WXAgg')
 
 
@@ -57,28 +58,26 @@ class MainFrame ( wx.Frame ):
         # MENU BAR
         ###############################################
         self.MenuBar = wx.MenuBar( 0 )
-        self.FileMenu = wx.Menu()
+        #self.FileMenu = wx.Menu()
 
         # File menu and its items
-        self.openMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Open"+ u"\t" + u"Ctrl + O", wx.EmptyString, wx.ITEM_NORMAL )
-        self.FileMenu.Append( self.openMenu )
+        #self.FileMenu.AppendSeparator()
 
-        self.FileMenu.AppendSeparator()
-
-        self.closeMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
-        self.FileMenu.Append( self.closeMenu )
+        # self.closeMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
+        # self.FileMenu.Append( self.closeMenu )
         
-        self.MenuBar.Append( self.FileMenu, u"&File" ) 
+        # self.MenuBar.Append( self.FileMenu, u"&File" ) 
         
-        # # Menu for the modules and its items
-        # self.modulesMenu = wx.Menu()
-        # self.satelliteOrtbitItem = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Satellite Orbit", wx.EmptyString, wx.ITEM_NORMAL )
-        # self.modulesMenu.Append( self.satelliteOrtbitItem )
+        #Input menu
+        self.InputMenu = wx.Menu()
+        self.openMenu = wx.MenuItem( self.InputMenu, wx.ID_ANY, u"&Open"+ u"\t" + u"Ctrl + O", wx.EmptyString, wx.ITEM_NORMAL )
+        self.InputMenu.Append( self.openMenu )
+        self.InputMenu.AppendSeparator()
+        self.closeMenu = wx.MenuItem( self.InputMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
+        self.InputMenu.Append( self.closeMenu )
         
-        # self.ionosphericModel = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Ionospheric Model", wx.EmptyString, wx.ITEM_NORMAL )
-        # self.modulesMenu.Append( self.ionosphericModel )
+        self.MenuBar.Append( self.InputMenu, u"&Input" )
         
-        # self.MenuBar.Append( self.modulesMenu, u"&Modules" ) 
         
         # Help menu for the about page and help contents
         self.HelpMenu = wx.Menu()
@@ -115,12 +114,10 @@ class MainFrame ( wx.Frame ):
         
         self.noteBook = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.NB_FIXEDWIDTH|wx.NB_TOP )
         orbitNoteBookWindow = orbitNoteBookPanel(self.noteBook)
-        angleNoteBookWindow = angleNoteBookPanel(self.noteBook)
         ionoNoteBookWindow = ionosphereNoteBookPanel(self.noteBook)
         
         # Add the pages to the noteBook
         self.noteBook.AddPage(orbitNoteBookWindow, 'Orbit')
-        self.noteBook.AddPage(angleNoteBookWindow, 'Angles')
         self.noteBook.AddPage(ionoNoteBookWindow, 'Ionosphere')
         
 
@@ -254,36 +251,97 @@ class orbitNoteBookPanel(wx.Panel):
         # Widgets for entering parameters for satellite orbit modelling
         # Add spacer for a nicer view
         satelliteStaticbox.AddSpacer(10)
-
-        satSizer2 = wx.BoxSizer( wx.HORIZONTAL )
         
+        # ----------------------------- MODE -----------------------------#
+        modeSelectionSizer = wx.BoxSizer( wx.HORIZONTAL )
+        
+        self.choiceStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Preferred Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.choiceStaticText.Wrap( -1 )
+        modeSelectionSizer.Add( self.choiceStaticText, 0, wx.ALL, 5 )
+        
+        choiceChoices = [ u"Global Map (groundtrack)", u"Local Map (azimuth/elevation)" ]
+        self.choice = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
+        modeSelectionSizer.Add( self.choice, 0, wx.ALL, 5 )
+
+        satelliteStaticbox.Add( modeSelectionSizer, 0, 0, 5 )
+        
+        # Add spacer for a nicer view
+        satelliteStaticbox.AddSpacer(10)
+        
+
+        #PRN
+        satSizer2 = wx.BoxSizer( wx.HORIZONTAL )
         self.prnStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter prn number of SV (eg: 01, 02, 15):", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.prnStaticText.Wrap( -1 )
         satSizer2.Add( self.prnStaticText, 0, wx.ALL, 5 )
         
         self.prnTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         satSizer2.Add( self.prnTextCtrl, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( satSizer2, 0, wx.ALL, 5 )
 
-
+        #PRN scroll
         # self.orbitChoicesChoices = [ u" " ]
         # # self.orbitChoicesChoices.extend( MainFrame.onOpen.satellitePRN )
         # self.orbitChoices = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, self.orbitChoicesChoices, wx.CB_SORT )
         # satSizer2.Add( self.orbitChoices, 0, wx.ALL, 5 )
+        
+        #Text
+        #satelliteStaticbox.AddSpacer(10)
+        satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText.Wrap( -1 )
+        satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
+        
+        #longitude λ
+        satSizer4 = wx.BoxSizer( wx.HORIZONTAL )
+        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.longStaticText.Wrap( -1 )
+        satSizer4.Add( self.longStaticText, 0, wx.ALL, 5 )
+        self.longTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        satSizer4.Add( self.longTextCtrl, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( satSizer4, 0, wx.ALL, 5 )
+        
+        #latitude φ
+        satSizer5 = wx.BoxSizer( wx.HORIZONTAL )
+        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.latStaticText.Wrap( -1 )
+        satSizer5.Add( self.latStaticText, 0, wx.ALL, 5 )
+        self.latTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        satSizer5.Add( self.latTextCtrl, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( satSizer5, 0, wx.ALL, 5 )
+        
+        #height h
+        satSizer6 = wx.BoxSizer( wx.HORIZONTAL )
+        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.hStaticText.Wrap( -1 )
+        satSizer6.Add( self.hStaticText, 0, wx.ALL, 5 )
+        self.hTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        satSizer6.Add( self.hTextCtrl, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( satSizer6, 0, wx.ALL, 5 )
+        
+        satelliteStaticbox.AddSpacer(12)
 
         
-        
-        satelliteStaticbox.Add( satSizer2, 0, wx.ALL, 5 )
-        
-        satelliteStaticbox.AddSpacer(150)
-
-
+        #Proceed button
+        #satelliteStaticbox.AddSpacer(150)
         self.orbitPoceedButton = wx.Button( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
         satelliteStaticbox.Add( self.orbitPoceedButton, 0, wx.ALL, 5 )
         
+        #Show relevant boxes only after mode selection
+        wx.CallAfter(self.prnStaticText.Show, False)
+        wx.CallAfter(self.prnTextCtrl.Show, False)
+        wx.CallAfter(self.refStaticText.Show, False)
+        wx.CallAfter(self.longStaticText.Show, False)
+        wx.CallAfter(self.longTextCtrl.Show, False)
+        wx.CallAfter(self.latStaticText.Show, False)
+        wx.CallAfter(self.latTextCtrl.Show, False)
+        wx.CallAfter(self.hStaticText.Show, False)
+        wx.CallAfter(self.hTextCtrl.Show, False)
 
         # Connected events
+        self.choice.Bind( wx.EVT_CHOICE, self.OnChoice )
         self.orbitPoceedButton.Bind( wx.EVT_BUTTON, self.OrbitCompute )
-        
         
         self.SetSizer( noteBookSizer )
         self.Layout()
@@ -309,6 +367,15 @@ class orbitNoteBookPanel(wx.Panel):
                 dlg.Destroy()
                 return
 
+        except Exception as err:
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        
+        
+        if self.choice.GetStringSelection() == 'Global Map (groundtrack)':
+            #ORBIT
             satelliteOrbit = SatelliteInfo( filePath, userPRN, 0, 0, 0, False )
             
             plt.figure()
@@ -317,128 +384,65 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=3, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=2.5, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(satelliteOrbit.first_epoch)
             last_epc=str(satelliteOrbit.last_epoch)
             plt.title('Satellite G'+str(userPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
             #plt.suptitle()
+        
+        else:
+            #ANGLES
+            long = self.longTextCtrl.GetValue()
+            lat = self.latTextCtrl.GetValue()
+            h = self.hTextCtrl.GetValue()
 
-        except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-
-
-
-#---------------------------------Angles Map---------------------------------#
-class angleNoteBookPanel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        
-        # Create the sizer
-        noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
-        # Create the static box for receiving parameters for the functionalities
-        satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Angles Map" ), wx.VERTICAL )
-        # Add the static box to the sizer
-        noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
-        
-        # Widgets for entering parameters for satellite orbit modelling
-        # Add spacer for a nicer view
-        satelliteStaticbox.AddSpacer(10)
-        
-        satSizer2 = wx.BoxSizer( wx.HORIZONTAL )
-        self.prnStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter prn number of SV (eg: 01, 02, 15):", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.prnStaticText.Wrap( -1 )
-        satSizer2.Add( self.prnStaticText, 0, wx.ALL, 5 )
-        self.prnTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer2.Add( self.prnTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer2, 0, wx.ALL, 5 )
-        
-        satelliteStaticbox.AddSpacer(10)
-        
-        satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point:", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.refStaticText.Wrap( -1 )
-        satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
-        
-        satSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-        self.xStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"x", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.xStaticText.Wrap( -1 )
-        satSizer4.Add( self.xStaticText, 0, wx.ALL, 5 )
-        self.xTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer4.Add( self.xTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer4, 0, wx.ALL, 5 )
-        
-        satSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-        self.yStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"y", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.yStaticText.Wrap( -1 )
-        satSizer5.Add( self.yStaticText, 0, wx.ALL, 5 )
-        self.yTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer5.Add( self.yTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer5, 0, wx.ALL, 5 )
-        
-        satSizer6 = wx.BoxSizer( wx.HORIZONTAL )
-        self.zStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"z", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.zStaticText.Wrap( -1 )
-        satSizer6.Add( self.zStaticText, 0, wx.ALL, 5 )
-        self.zTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer6.Add( self.zTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer6, 0, wx.ALL, 5 )
-        
-        satelliteStaticbox.AddSpacer(30)
-          
-        self.orbitPoceedButton = wx.Button( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
-        satelliteStaticbox.Add( self.orbitPoceedButton, 0, wx.ALL, 5 )
-        
-
-        # Connected events
-        self.orbitPoceedButton.Bind( wx.EVT_BUTTON, self.AnglesCompute )
-        
-        
-        self.SetSizer( noteBookSizer )
-        self.Layout()
-         
-        #self.SetSizer( noteBookSizer )
-        self.Layout()
-        
-        
-    def AnglesCompute(self, event):
-        try:
-            filePath = MainFrame.onOpen.filePath
-            if os.path.splitext(filePath)[1] != '.rnx':
-                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
-
-            svPRN = self.prnTextCtrl.GetValue()
-            x = self.xTextCtrl.GetValue()
-            y = self.yTextCtrl.GetValue()
-            z = self.zTextCtrl.GetValue()
-
-            angles = SatelliteInfo( filePath, svPRN, x, y, z, True )
+            angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
+            
+            #Azimuth
             plt.figure()
-            #plt.plot(angles.sv_azimuth, angles.sv_elevation, 'r', linewidth=3)
-            plt.polar(angles.sv_azimuth, angles.sv_elevation)
+            plt.plot(angles.sv_datetimes, angles.sv_azimuth, 'r', linewidth=2)
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(angles.first_epoch)
             last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(svPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
-            #plt.xlabel('Azimuth', size=12)
-            #plt.ylabel('Elevation', size=12)
+            plt.title('Satellite G'+str(userPRN)+': Azimuth\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            
+            #elevation
+            plt.figure()
+            plt.plot(angles.sv_datetimes, angles.sv_elevation, 'r', linewidth=2)
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(angles.first_epoch)
+            last_epc=str(angles.last_epoch)
+            plt.title('Satellite G'+str(userPRN)+': Elevation\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+       
 
-        except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx)/existing satellite has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
-            dlg.ShowModal()
-            dlg.Destroy()
-            return 
 
+    def OnChoice (self, event):
+        self.user_choice = event.GetString()
+        if self.user_choice == 'Local Map (azimuth/elevation)':
+            self.prnStaticText.Show(True)
+            self.prnTextCtrl.Show(True)
+            self.refStaticText.Show(True)
+            self.longStaticText.Show(True)
+            self.longTextCtrl.Show(True)
+            self.latStaticText.Show(True)
+            self.latTextCtrl.Show(True)
+            self.hStaticText.Show(True)
+            self.hTextCtrl.Show(True)
+        else:
+            self.prnStaticText.Show(True)
+            self.prnTextCtrl.Show(True)
+            self.refStaticText.Show(False)
+            self.longStaticText.Show(False)
+            self.longTextCtrl.Show(False)
+            self.latStaticText.Show(False)
+            self.latTextCtrl.Show(False)
+            self.hStaticText.Show(False)
+            self.hTextCtrl.Show(False)
+            
         
-        
-        
+
+       
 # ------------------------------- Ionospheric Error Parameter ------------------------------#             
 
 class ionosphereNoteBookPanel(wx.Panel):
@@ -466,7 +470,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.choiceStaticText.Wrap( -1 )
         modeSelectionSizer.Add( self.choiceStaticText, 0, wx.ALL, 5 )
         
-        choiceChoices = [ u"Globe Map", u"Local Map" ]
+        choiceChoices = [ u"Global Map", u"Local Map" ]
         self.choice = wx.Choice( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
         modeSelectionSizer.Add( self.choice, 0, wx.ALL, 5 )
 
@@ -611,6 +615,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         wx.CallAfter(self.latMinControl.Show, False)
         wx.CallAfter(self.latSSControl.Show, False)
 
+        ionosphereStaticbox.AddSpacer(15)
         self.proceedButton = wx.Button( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
         ionosphereStaticbox.Add( self.proceedButton, 0, wx.ALL, 5 )
         
