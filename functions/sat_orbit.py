@@ -24,6 +24,7 @@ from astropy import units as u
 # Plotting modules
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
+from datetime import datetime
 
 class SatelliteInfo():
     """     Satellite orbit parameters    """
@@ -43,10 +44,14 @@ class SatelliteInfo():
         #print(nav)
 
         file = open("Satellites_positions_output.txt", "w")
+        file2 = open("Satellites_velocities_output.txt", "w")
+        file.close()
+        file2.close()
 
         # Time
         #t=int(input("Insert time: "))
         val=[]
+        val_velocities=[]
         
         for item in nav:
            
@@ -129,8 +134,7 @@ class SatelliteInfo():
                 if sec_diff !=0:
                     t.append(toe+sec_diff+900*(i-1))
                 else: 
-                    t.append(toe+900*(i-1))
-            #print(t)    
+                    t.append(toe+900*(i-1))  
             
             # Fixed values
             pi=math.atan(1)*4
@@ -140,7 +144,7 @@ class SatelliteInfo():
             earth_rotation_rate=7.2921151467 * 10**(-5)   #WGS84   #rad/s
             
             for k in range(1, 10):
-                #to get 10 values, from start and then one every 15 minutes
+                #to get 9 values in time, from start and then one every 15 minutes
                 min=minute+15*(k-1)
                 h=hour
                 d=day
@@ -251,29 +255,31 @@ class SatelliteInfo():
                 # Print
                 prn_str=str(prn)
                 prn_str_adj=prn_str.zfill(2)
-                sv_prn='G'+prn_str_adj
-                  
+                sv_prn='G'+prn_str_adj   
                 #sat_values=[sv_prn, int(time_from_eph_rt), x, y, z, x_vel, y_vel, z_vel]
                 
                 #write epoch (year month day hour minute second)
                 epoch_print=[yr, m, d, h, min, second]
-                #print(eph)
+
                 #write on array epoch + positions
                 values=[epoch_print, sv_prn, x, y, z]
                 val.append(values)
+                velocities=[epoch_print, sv_prn, x_vel, y_vel, z_vel]
+                val_velocities.append(velocities)
                 
 
-        #riordina array
-        # def sort_key(values):
-        #     return values[0]
-
-        # val.sort(key=sort_key)
         val.sort()
-        #print(val)
+        val_velocities.sort()
+        
         #print su file
         with open("Satellites_positions_output.txt", "a") as file:
             for item in val:
                 file.write("%s\n" % item)
+                
+        with open("Satellites_velocities_output.txt", "a") as file2:
+            for item in val_velocities:
+                file2.write("%s\n" % item)
+                
 
         #splitting values into vectors
         prn_used='G'+str(self.sv_number)
@@ -282,12 +288,23 @@ class SatelliteInfo():
         sv_y=[]
         sv_z=[]
         self.sv_epoch=[]
+        self.sv_datetimes=[]
         count=0
         current_epoch=...
         for item in val:
             if item[1]==prn_used:
                 #print(item)
                 self.sv_epoch.append(item[0])
+                year=str(item[0][0])
+                month=str(item[0][1])
+                day=str(item[0][2])
+                hour=str(item[0][3])
+                minute=str(item[0][4])
+                second=str(item[0][5])
+                epoch_str=year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second
+                datetime_object=datetime.strptime(epoch_str, '%Y/%m/%d %H:%M:%S')
+                self.sv_datetimes.append(datetime_object)
+
                 sv_x.append(item[2])
                 sv_y.append(item[3])
                 sv_z.append(item[4])
@@ -297,8 +314,8 @@ class SatelliteInfo():
                 else:
                     current_epoch=item[0]
         self.last_epoch=current_epoch
-        
-                
+
+      
         #----Preparing parameters for azimuth/elevation computations----#
         #cartesian coordinates of ref. point
         if check is True:
@@ -323,16 +340,6 @@ class SatelliteInfo():
             y=sv_y[i-1]
             z=sv_z[i-1]
             
-            # a=6378137
-            # f=1/298.257222100882711243
-            # b=a-a*f
-            # #e=math.sqrt((a**2-b**2)/a**2)
-            # e_b=math.sqrt((a**2-b**2)/b**2)
-            # r=math.sqrt(x**2+y**2)                  
-            # psi=math.atan2(z,(r*math.sqrt(1-e**2)))
-            
-            # long=math.atan2(y,x)             #lambda         
-            # lat=math.atan2((z+e_b**2*b*(math.sin(psi))**3),(r-e**2*a*(math.cos(psi))**3))   #phi
             
             (lat, long, h)=cart2geod(float(x), float(y), float(z))
             
@@ -349,21 +356,17 @@ class SatelliteInfo():
             #-------------Angles calculation--------------#
             if check is True:
                 #conversion from GC baseline to LC
-                #baseline=[x-float(x_ref), y-float(y_ref), z-float(z_ref)]
                 baseline=[x-x_ref, y-y_ref, z-z_ref]
-                #enu=R0*baseline
-                lc=np.dot(R0, baseline)  #local cartesian coordinates
-                #print(lc)
+                lc=np.dot(R0, baseline)  #local cartesian coordinates #matrix product
                 east=lc[0]
-                #print(east)
                 north=lc[1]
-                #print(north)
                 up=lc[2]
                 
                 #compute azimuth
                 azimuth=math.atan2(east, north)
                 azimuth_deg=azimuth*180/math.pi
                 self.sv_azimuth.append(azimuth_deg)
+                
                 #compute elevation
                 elevation=math.atan2(up, math.sqrt(east**2 + north**2))
                 elevation_deg=elevation*180/math.pi
