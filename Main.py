@@ -26,6 +26,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 import cartopy.crs as ccrs
 from astroplan.plots import plot_sky
+from datetime import datetime
 matplotlib.use('WXAgg')
 
 
@@ -57,32 +58,26 @@ class MainFrame ( wx.Frame ):
         # MENU BAR
         ###############################################
         self.MenuBar = wx.MenuBar( 0 )
-        self.FileMenu = wx.Menu()
+        #self.FileMenu = wx.Menu()
 
         # File menu and its items
         #self.FileMenu.AppendSeparator()
 
-        self.closeMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
-        self.FileMenu.Append( self.closeMenu )
+        # self.closeMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
+        # self.FileMenu.Append( self.closeMenu )
         
-        self.MenuBar.Append( self.FileMenu, u"&File" ) 
+        # self.MenuBar.Append( self.FileMenu, u"&File" ) 
         
         #Input menu
         self.InputMenu = wx.Menu()
-        self.openMenu = wx.MenuItem( self.FileMenu, wx.ID_ANY, u"&Open"+ u"\t" + u"Ctrl + O", wx.EmptyString, wx.ITEM_NORMAL )
+        self.openMenu = wx.MenuItem( self.InputMenu, wx.ID_ANY, u"&Open"+ u"\t" + u"Ctrl + O", wx.EmptyString, wx.ITEM_NORMAL )
         self.InputMenu.Append( self.openMenu )
+        self.InputMenu.AppendSeparator()
+        self.closeMenu = wx.MenuItem( self.InputMenu, wx.ID_ANY, u"&Close"+ u"\t" + u"Alt + F4", wx.EmptyString, wx.ITEM_NORMAL )
+        self.InputMenu.Append( self.closeMenu )
         
         self.MenuBar.Append( self.InputMenu, u"&Input" )
         
-        # # Menu for the modules and its items
-        # self.modulesMenu = wx.Menu()
-        # self.satelliteOrtbitItem = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Satellite Orbit", wx.EmptyString, wx.ITEM_NORMAL )
-        # self.modulesMenu.Append( self.satelliteOrtbitItem )
-        
-        # self.ionosphericModel = wx.MenuItem( self.modulesMenu, wx.ID_ANY, u"&Ionospheric Model", wx.EmptyString, wx.ITEM_NORMAL )
-        # self.modulesMenu.Append( self.ionosphericModel )
-        
-        # self.MenuBar.Append( self.modulesMenu, u"&Modules" ) 
         
         # Help menu for the about page and help contents
         self.HelpMenu = wx.Menu()
@@ -362,15 +357,23 @@ class orbitNoteBookPanel(wx.Panel):
             h = self.hTextCtrl.GetValue()
 
             angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
+            
+            #Azimuth
             plt.figure()
-            #plt.plot(angles.sv_azimuth, angles.sv_elevation, 'r', linewidth=3)
-            plt.polar(angles.sv_azimuth, angles.sv_elevation)
+            plt.plot(angles.sv_datetimes, angles.sv_azimuth, 'r', linewidth=2)
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(angles.first_epoch)
             last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
-            #plt.xlabel('Azimuth', size=12)
-            #plt.ylabel('Elevation', size=12)         
+            plt.title('Satellite G'+str(userPRN)+': Azimuth\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            
+            #elevation
+            plt.figure()
+            plt.plot(angles.sv_datetimes, angles.sv_elevation, 'r', linewidth=2)
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(angles.first_epoch)
+            last_epc=str(angles.last_epoch)
+            plt.title('Satellite G'+str(userPRN)+': Elevation\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+       
 
 
     def OnChoice (self, event):
