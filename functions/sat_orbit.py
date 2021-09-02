@@ -50,8 +50,8 @@ class SatelliteInfo():
 
         # Time
         #t=int(input("Insert time: "))
-        val=[]
-        val_velocities=[]
+        positions=[]
+        velocities=[]
         
         for item in nav:
            
@@ -260,24 +260,35 @@ class SatelliteInfo():
                 
                 #write epoch (year month day hour minute second)
                 epoch_print=[yr, m, d, h, min, second]
+                
+                #check redundancy caused by 2 hours span values (if elem is computed again, using epoch closer to nav message provided data)
+                if positions:                    
+                    for elem in positions:
+                        if elem[0]==epoch_print and elem[1]==sv_prn:
+                            positions.remove(elem)
+                            
+                if velocities:                    
+                    for elem in velocities:
+                        if elem[0]==epoch_print and elem[1]==sv_prn:
+                            velocities.remove(elem) 
 
                 #write on array epoch + positions
-                values=[epoch_print, sv_prn, x, y, z]
-                val.append(values)
-                velocities=[epoch_print, sv_prn, x_vel, y_vel, z_vel]
-                val_velocities.append(velocities)
+                current_positions=[epoch_print, sv_prn, x, y, z]
+                positions.append(current_positions)
+                current_velocities=[epoch_print, sv_prn, x_vel, y_vel, z_vel]
+                velocities.append(current_velocities)
                 
 
-        val.sort()
-        val_velocities.sort()
+        positions.sort()
+        velocities.sort()
         
         #print su file
         with open("Satellites_positions_output.txt", "a") as file:
-            for item in val:
+            for item in positions:
                 file.write("%s\n" % item)
                 
         with open("Satellites_velocities_output.txt", "a") as file2:
-            for item in val_velocities:
+            for item in velocities:
                 file2.write("%s\n" % item)
                 
 
@@ -291,7 +302,7 @@ class SatelliteInfo():
         self.sv_datetimes=[]
         count=0
         current_epoch=...
-        for item in val:
+        for item in positions:
             if item[1]==prn_used:
                 #print(item)
                 self.sv_epoch.append(item[0])
