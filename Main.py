@@ -147,7 +147,7 @@ class MainFrame ( wx.Frame ):
 
     def onOpen (self, event):
         try:
-            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx| All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx|Rinex (*.yyn)|*.yyn|All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
             if file.ShowModal() != wx.ID_OK:
                 return
             MainFrame.onOpen.filePath = file.GetPath()
@@ -158,7 +158,7 @@ class MainFrame ( wx.Frame ):
             file.Destroy()
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx / .yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx/.yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -171,7 +171,7 @@ class MainFrame ( wx.Frame ):
                     word = line.split()
 
                     # Check the rinex version of file
-                    if float(word[0]) > 3.05:
+                    if float(word[0]) > 3.05 or float(word[0]) < 3.00:
                         dlg = wx.MessageDialog(None, 'Rinex file version is not supported', 'File Version Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
@@ -180,7 +180,7 @@ class MainFrame ( wx.Frame ):
                     # check that the file is a navigation message file
                     if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) and ((word[1][0]!='N') and (word[5][0]!='G')):
                         print(word[1], word[3], word[1][0], word[5][0])
-                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type111', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
@@ -199,7 +199,7 @@ class MainFrame ( wx.Frame ):
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return                
@@ -384,7 +384,7 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=2.5, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=2, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(satelliteOrbit.first_epoch)
             last_epc=str(satelliteOrbit.last_epoch)
