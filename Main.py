@@ -288,14 +288,14 @@ class orbitNoteBookPanel(wx.Panel):
         #Text
         #satelliteStaticbox.AddSpacer(10)
         satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m)", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.refStaticText.Wrap( -1 )
         satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
         satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
         
         #longitude λ
         satSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.longStaticText.Wrap( -1 )
         satSizer4.Add( self.longStaticText, 0, wx.ALL, 5 )
         self.longTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -304,7 +304,7 @@ class orbitNoteBookPanel(wx.Panel):
         
         #latitude φ
         satSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude:    ", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.latStaticText.Wrap( -1 )
         satSizer5.Add( self.latStaticText, 0, wx.ALL, 5 )
         self.latTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -313,7 +313,7 @@ class orbitNoteBookPanel(wx.Panel):
         
         #height h
         satSizer6 = wx.BoxSizer( wx.HORIZONTAL )
-        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height:      ", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.hStaticText.Wrap( -1 )
         satSizer6.Add( self.hStaticText, 0, wx.ALL, 5 )
         self.hTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
