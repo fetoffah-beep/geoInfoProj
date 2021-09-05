@@ -384,7 +384,7 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=2, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
             first_epc=str(satelliteOrbit.first_epoch)
             last_epc=str(satelliteOrbit.last_epoch)
