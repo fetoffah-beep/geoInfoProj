@@ -386,9 +386,9 @@ class orbitNoteBookPanel(wx.Panel):
             
             plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
-            first_epc=str(satelliteOrbit.first_epoch)
-            last_epc=str(satelliteOrbit.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+'-'+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
+            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+'-'+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
+            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+'  to '+last_epc+')', fontdict=font1)
             #plt.suptitle()
         
         else:
