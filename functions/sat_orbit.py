@@ -321,10 +321,22 @@ class SatelliteInfo():
                 sv_z.append(item[4])
                 if count==0:
                     self.first_epoch=item[0]
+                    self.fe_year=self.first_epoch[0]
+                    self.fe_month=self.first_epoch[1]
+                    self.fe_day=self.first_epoch[2]
+                    self.fe_hour=self.first_epoch[3]
+                    self.fe_minute=self.first_epoch[4]
+                    self.fe_second=self.first_epoch[5]
                     count +=1
                 else:
                     current_epoch=item[0]
         self.last_epoch=current_epoch
+        self.le_year=self.last_epoch[0]
+        self.le_month=self.last_epoch[1]
+        self.le_day=self.last_epoch[2]
+        self.le_hour=self.last_epoch[3]
+        self.le_minute=self.last_epoch[4]
+        self.le_second=self.last_epoch[5]
 
       
         #----Preparing parameters for azimuth/elevation computations----#
