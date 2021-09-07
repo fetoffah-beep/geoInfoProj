@@ -147,7 +147,7 @@ class MainFrame ( wx.Frame ):
 
     def onOpen (self, event):
         try:
-            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx| All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx|Rinex (*.yyn)|*.yyn|All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
             if file.ShowModal() != wx.ID_OK:
                 return
             MainFrame.onOpen.filePath = file.GetPath()
@@ -158,7 +158,7 @@ class MainFrame ( wx.Frame ):
             file.Destroy()
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx / .yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx/.yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -171,7 +171,7 @@ class MainFrame ( wx.Frame ):
                     word = line.split()
 
                     # Check the rinex version of file
-                    if float(word[0]) > 3.05:
+                    if float(word[0]) > 3.05 or float(word[0]) < 3.00:
                         dlg = wx.MessageDialog(None, 'Rinex file version is not supported', 'File Version Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
@@ -180,7 +180,7 @@ class MainFrame ( wx.Frame ):
                     # check that the file is a navigation message file
                     if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) and ((word[1][0]!='N') and (word[5][0]!='G')):
                         print(word[1], word[3], word[1][0], word[5][0])
-                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type111', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
@@ -199,7 +199,7 @@ class MainFrame ( wx.Frame ):
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return                
@@ -288,14 +288,14 @@ class orbitNoteBookPanel(wx.Panel):
         #Text
         #satelliteStaticbox.AddSpacer(10)
         satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m)", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.refStaticText.Wrap( -1 )
         satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
         satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
         
         #longitude λ
         satSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.longStaticText.Wrap( -1 )
         satSizer4.Add( self.longStaticText, 0, wx.ALL, 5 )
         self.longTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -304,7 +304,7 @@ class orbitNoteBookPanel(wx.Panel):
         
         #latitude φ
         satSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude:    ", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.latStaticText.Wrap( -1 )
         satSizer5.Add( self.latStaticText, 0, wx.ALL, 5 )
         self.latTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -313,7 +313,7 @@ class orbitNoteBookPanel(wx.Panel):
         
         #height h
         satSizer6 = wx.BoxSizer( wx.HORIZONTAL )
-        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height:      ", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.hStaticText.Wrap( -1 )
         satSizer6.Add( self.hStaticText, 0, wx.ALL, 5 )
         self.hTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -384,11 +384,11 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=2.5, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
-            first_epc=str(satelliteOrbit.first_epoch)
-            last_epc=str(satelliteOrbit.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+'\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+'-'+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
+            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+'-'+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
+            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+'  to '+last_epc+')', fontdict=font1)
             #plt.suptitle()
         
         else:
