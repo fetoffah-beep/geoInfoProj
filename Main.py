@@ -669,10 +669,10 @@ class ionosphereNoteBookPanel(wx.Panel):
             
             x,y = np.meshgrid(azimuth, elevation)
 
-            x = x * np.pi / 180
-            y = np.flip( y * np.pi / 180, 1 )
+            x = np.flip( x * np.pi / 180, 1)
+            y = y * np.pi / 180
 
-            stationPoints = np.flip( stationPoints, (0,1) )
+            stationPoints = np.flip( stationPoints, (0, 1) )
 
             fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
             CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
