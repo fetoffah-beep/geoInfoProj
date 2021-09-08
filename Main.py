@@ -147,22 +147,32 @@ class MainFrame ( wx.Frame ):
 
     def onOpen (self, event):
         try:
-            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx|Rinex (*.yyn)|*.yyn|All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+            file = wx.FileDialog(self, message = "Select a file", defaultDir = os.getcwd(), defaultFile="", wildcard=u"Rinex (*.rnx)|*.rnx|Navigation file (*.*n)|*.*n|All files(*.)| *.*", style= wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
             if file.ShowModal() != wx.ID_OK:
                 return
+
+            # Get the path of the file
             MainFrame.onOpen.filePath = file.GetPath()
 
-            #Get the available satellite PRN in the file
+            # Check on the file extension to be opened
+            filePath = MainFrame.onOpen.filePath
+            if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx | .*n)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+            # Get the available satellite PRN in the file
             MainFrame.onOpen.satellitePRN =   gsp( MainFrame.onOpen.filePath )
+
 
             file.Destroy()
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx/.yyn)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx | .*n)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
-
 
         #Checks on file type and other warnings
         with open(MainFrame.onOpen.filePath,'r') as file:
@@ -171,38 +181,36 @@ class MainFrame ( wx.Frame ):
                     word = line.split()
 
                     # Check the rinex version of file
-                    if float(word[0]) > 3.05 or float(word[0]) < 3.00:
+                    if float(word[0]) > 3.05:
                         dlg = wx.MessageDialog(None, 'Rinex file version is not supported', 'File Version Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
 
                     # check that the file is a navigation message file
-                    if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) and ((word[1][0]!='N') and (word[5][0]!='G')):
-                        print(word[1], word[3], word[1][0], word[5][0])
-                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) or ((word[1][0]!='N') and (word[5][0]!='G')):
+                        dlg = wx.MessageDialog(None, 'Selected file is not of Navigation message type', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
 
                 # check that at least one SV message is in the file
                 if 'END OF HEADER' in line:
-                    for line in file:
-                        if len(MainFrame.onOpen.satellitePRN)==0:
-                            dlg = wx.MessageDialog(None, 'No navigation data was found in the selected file', 'Empty Nav File', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
-                            dlg.ShowModal()
-                            dlg.Destroy()
-                            return
-
+                    if file.read()=='' and len(MainFrame.onOpen.satellitePRN)==0:
+                        dlg = wx.MessageDialog(None, 'No navigation data was found in the selected file', 'Empty Nav File', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return
 
         # Check of ionospheric parameters
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
-            return                
+            return    
+
    
 
     def aboutPage(self, event):

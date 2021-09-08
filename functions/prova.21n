@@ -1,0 +1,51 @@
+     3.04           NAVIGATION DATA     G                   RINEX VERSION / TYPE
+JPS2RIN v.2.0.168   BASH SCRIPT         20210101 010023 UTC PGM / RUN BY / DATE 
+gfzrnx-1.13-7761    FILE MERGE          20210102 012903 UTC COMMENT             
+GPUT -3.7252902985E-09-1.065814104E-14  61440 2139          TIME SYSTEM CORR    
+    18                  GPS                                 LEAP SECONDS        
+                                                            COMMENT             
+   ------------------------------------------------------   COMMENT             
+      # of NAV. EPOCHS based on # of FILE CONTRIBUTIONS     COMMENT             
+   ------------------------------------------------------   COMMENT             
+                                                            COMMENT             
+BRD_HD  PRN T    =1   <5  <10  <15  <25  <50 >=50    #EPO   COMMENT             
+BRD_LN  -------------------------------------------------   COMMENT             
+BRD_STK G01 _     .    3    2    .    .    .    .       5   COMMENT             
+BRD_STK G02 _     1    7    .    .    .    .    .       8   COMMENT             
+BRD_STK G03 _     1    3    1    .    .    .    .       5   COMMENT             
+BRD_STK G04 _     .    8    .    .    .    .    .       8   COMMENT             
+BRD_STK G05 _     1    5    1    .    .    .    .       7   COMMENT             
+BRD_STK G06 _     1    7    .    .    .    .    .       8   COMMENT             
+BRD_STK G07 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_STK G08 _     3    5    .    .    .    .    .       8   COMMENT             
+BRD_STK G09 _     .    4    1    .    .    .    .       5   COMMENT             
+BRD_STK G10 _     1    4    2    .    .    .    .       7   COMMENT             
+BRD_STK G11 _     .    3    1    .    .    .    .       4   COMMENT             
+BRD_STK G12 _     2    5    .    .    .    .    .       7   COMMENT             
+BRD_STK G13 _     .    5    1    .    .    .    .       6   COMMENT             
+BRD_STK G14 _     1    3    2    .    .    .    .       6   COMMENT             
+BRD_STK G15 _     2    4    2    .    .    .    .       8   COMMENT             
+BRD_STK G16 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_STK G17 _     .    5    1    .    .    .    .       6   COMMENT             
+BRD_STK G18 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_STK G19 _     .    4    2    .    .    .    .       6   COMMENT             
+BRD_STK G20 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_STK G21 _     1    4    .    .    .    .    .       5   COMMENT             
+BRD_STK G22 _     1    5    .    .    .    .    .       6   COMMENT             
+BRD_STK G23 _     1    6    1    .    .    .    .       8   COMMENT             
+BRD_STK G24 _     .    4    2    .    .    .    .       6   COMMENT             
+BRD_STK G25 _     .    5    .    .    .    .    .       5   COMMENT             
+BRD_STK G26 _     2    5    1    .    .    .    .       8   COMMENT             
+BRD_STK G27 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_STK G28 _     .    5    1    .    .    .    .       6   COMMENT             
+BRD_STK G29 _     .    5    1    .    .    .    .       6   COMMENT             
+BRD_STK G30 _     2    6    .    .    .    .    .       8   COMMENT             
+BRD_STK G31 _     1    7    .    .    .    .    .       8   COMMENT             
+BRD_STK G32 _     1    6    .    .    .    .    .       7   COMMENT             
+BRD_LN  -------------------------------------------------   COMMENT             
+BRD_SYS G   -                                         212   COMMENT             
+                                                            COMMENT             
+BRD_LN  -------------------------------------------------   COMMENT             
+BRD_ALL                                               212   COMMENT             
+                                                            COMMENT             
+                                                            END OF HEADER
