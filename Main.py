@@ -206,7 +206,7 @@ class MainFrame ( wx.Frame ):
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return    
@@ -393,7 +393,7 @@ class orbitNoteBookPanel(wx.Panel):
             dlg.Destroy()
             return
         
-        
+                
         if self.choice.GetStringSelection() ==  "Global Map (groundtrack)":
             #ORBIT
             satelliteOrbit = SatelliteInfo( filePath, userPRN, 0, 0, 0, False )
@@ -404,37 +404,55 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
+            #plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro--', linewidth=2, markersize=7, transform=ccrs.Geodetic())
             plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
+            #plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'b', linewidth=3, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
-            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+'-'+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
-            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+'-'+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
-            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+'  to '+last_epc+')', fontdict=font1)
+            plt.title('Satellite G'+str(userPRN)+'\n(from '+str(satelliteOrbit.first_datetime)+' to '+str(satelliteOrbit.last_datetime)+')', fontdict=font1)
             #plt.suptitle()
         
         else:
             #ANGLES
-            long = self.longTextCtrl.GetValue()
-            lat = self.latTextCtrl.GetValue()
-            h = self.hTextCtrl.GetValue()
+            try:
+                long = self.longTextCtrl.GetValue()
+                lat = self.latTextCtrl.GetValue()
+                h = self.hTextCtrl.GetValue()
+                
+                # Check that the parameters are not empty
+                if self.longTextCtrl.GetValue() == '' or self.latTextCtrl.GetValue() == '' or self.hTextCtrl.GetValue() == '':
+                    dlg = wx.MessageDialog(None, 'Check that all parameter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+                
+                # Check the range of the entered values
+                if float(long) > 180 or float(long) < -180 or float(lat) > 90 or float(lat) < -90:
+                    dlg = wx.MessageDialog(None, 'Value entered is out of range', 'Value error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
 
-            angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
+                angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
             
-            #Azimuth
-            plt.figure()
-            plt.plot(angles.sv_datetimes, angles.sv_azimuth, 'r', linewidth=2)
-            font1={'family':'serif','color':'black','size':15}
-            first_epc=str(angles.first_epoch)
-            last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+': Azimuth\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+                #Azimuth and elevation
+                font1={'family':'serif','color':'black','size':16}
             
-            #elevation
-            plt.figure()
-            plt.plot(angles.sv_datetimes, angles.sv_elevation, 'r', linewidth=2)
-            font1={'family':'serif','color':'black','size':15}
-            first_epc=str(angles.first_epoch)
-            last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+': Elevation\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
-       
+                fig, (ax1, ax2) = plt.subplots(2, 1)
+                fig.suptitle('Satellite: G'+str(userPRN), size=20)
+
+                ax1.plot(angles.sv_datetimes, angles.sv_azimuth, 'ro--', linewidth=2)
+                ax1.set_ylabel('Azimuth', fontdict=font1)
+                ax1.grid()
+
+                ax2.plot(angles.sv_datetimes, angles.sv_elevation, 'bo--', linewidth=2)
+                ax2.set_xlabel('Time', fontdict=font1)
+                ax2.set_ylabel('Elevation', fontdict=font1)
+                ax2.grid()            
+            except Exception as err:
+                dlg = wx.MessageDialog(None, 'Only numerical values are allowed', 'Data type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return               
 
 
     def OnChoice (self, event):
@@ -653,7 +671,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             try:
                 # Check that the parameters are not empty
                 if self.longTextCtrl.GetValue() == '' or self.latTextCtrl.GetValue() == '':
-                    dlg = wx.MessageDialog(None, 'Check that all paramter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg = wx.MessageDialog(None, 'Check that all parameter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -704,7 +722,7 @@ class ionosphereNoteBookPanel(wx.Panel):
             try:
                 # Check that the parameters are not empty
                 if self.elevTextCtrl.GetValue() == '' or self.azTextCtrl.GetValue() == '':
-                    dlg = wx.MessageDialog(None, 'Check that all paramter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg = wx.MessageDialog(None, 'Check that all parameter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
