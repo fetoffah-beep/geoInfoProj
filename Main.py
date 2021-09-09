@@ -265,7 +265,7 @@ class orbitNoteBookPanel(wx.Panel):
         # Add spacer for a nicer view
         orbitSizerLeft.AddSpacer(10)
         
-        self.choiceStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Prefered Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.choiceStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Preferred Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.choiceStaticText.Wrap( -1 )
         orbitSizerLeft.Add( self.choiceStaticText, 0, wx.ALL, 5 )
 
@@ -279,7 +279,7 @@ class orbitNoteBookPanel(wx.Panel):
         # Add spacer for a nicer view
         orbitSizerLeft.AddSpacer(10)
         
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of Reference (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of Reference (Deg Decimal, m):", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.refStaticText.Wrap( -1 )
         orbitSizerLeft.Add( self.refStaticText, 0, wx.ALL, 5 )
 
@@ -488,7 +488,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         # Add spacer for a nicer view
         ionoSizerLeft.AddSpacer(5)
         
-        self.choiceStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Prefered Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.choiceStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Preferred Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.choiceStaticText.Wrap( -1 )
         ionoSizerLeft.Add( self.choiceStaticText, 0, wx.ALL, 5 )
 
