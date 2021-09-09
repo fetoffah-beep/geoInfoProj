@@ -206,7 +206,7 @@ class MainFrame ( wx.Frame ):
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return    
@@ -392,11 +392,11 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro--', markersize=7, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
-            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+'-'+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
-            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+'-'+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
-            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+'  to '+last_epc+')', fontdict=font1)
+            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+' '+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
+            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+' '+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
+            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+' to '+last_epc+')', fontdict=font1)
             #plt.suptitle()
         
         else:
@@ -407,22 +407,24 @@ class orbitNoteBookPanel(wx.Panel):
 
             angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
             
-            #Azimuth
-            plt.figure()
-            plt.plot(angles.sv_datetimes, angles.sv_azimuth, 'r', linewidth=2)
-            font1={'family':'serif','color':'black','size':15}
-            first_epc=str(angles.first_epoch)
-            last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+': Azimuth\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+            #Azimuth and elevation
+            #▲first_epc=str(angles.fe_year)+'/'+str(angles.fe_month)+'/'+str(angles.fe_day)+' '+str(angles.fe_hour)+':'+str(angles.fe_minute)+':'+str(angles.fe_second)
+            #last_epc=str(angles.le_year)+'/'+str(angles.le_month)+'/'+str(angles.le_day)+' '+str(angles.le_hour)+':'+str(angles.le_minute)+':'+str(angles.le_second)
+            font1={'family':'serif','color':'black','size':16}
             
-            #elevation
-            plt.figure()
-            plt.plot(angles.sv_datetimes, angles.sv_elevation, 'r', linewidth=2)
-            font1={'family':'serif','color':'black','size':15}
-            first_epc=str(angles.first_epoch)
-            last_epc=str(angles.last_epoch)
-            plt.title('Satellite G'+str(userPRN)+': Elevation\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
-       
+            fig, (ax1, ax2) = plt.subplots(2, 1)
+            #fig.suptitle('Satellite G'+str(userPRN)+', from '+first_epc+' to '+last_epc, size=20)
+            fig.suptitle('Satellite: G'+str(userPRN), size=20)
+
+            ax1.plot(angles.sv_datetimes, angles.sv_azimuth, 'ro--', linewidth=2)
+            ax1.set_ylabel('Azimuth', fontdict=font1)
+            ax1.grid()
+
+            ax2.plot(angles.sv_datetimes, angles.sv_elevation, 'bo--', linewidth=2)
+            ax2.set_xlabel('Time', fontdict=font1)
+            ax2.set_ylabel('Elevation', fontdict=font1)
+            ax2.grid()
+
 
 
     def OnChoice (self, event):
