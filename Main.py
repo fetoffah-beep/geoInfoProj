@@ -250,92 +250,103 @@ class orbitNoteBookPanel(wx.Panel):
         noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
         
         # Create the static box for receiving parameters for the functionalities
-        satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Satellite Orbit Parameters" ), wx.VERTICAL )
+        satelliteStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Satellite Orbit Parameters" ), wx.HORIZONTAL )
         
         # Add the static box to the sizer
         noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
         
         
         # Widgets for entering parameters for satellite orbit modelling
+        
         # Add spacer for a nicer view
         satelliteStaticbox.AddSpacer(10)
         
-        # ----------------------------- MODE -----------------------------#
-        modeSelectionSizer = wx.BoxSizer( wx.HORIZONTAL )
+        orbitSizerLeft = wx.BoxSizer( wx.VERTICAL )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
         
-        self.choiceStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Preferred Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.choiceStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Prefered Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.choiceStaticText.Wrap( -1 )
-        modeSelectionSizer.Add( self.choiceStaticText, 0, wx.ALL, 5 )
+        orbitSizerLeft.Add( self.choiceStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
+        
+        self.prnStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter PRN number of SV (eg. 01, 02 etc.):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.prnStaticText.Wrap( -1 )
+        orbitSizerLeft.Add( self.prnStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
+        
+        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of Reference (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.refStaticText.Wrap( -1 )
+        orbitSizerLeft.Add( self.refStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
+        
+        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.longStaticText.Wrap( -1 )
+        orbitSizerLeft.Add( self.longStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
+        
+        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.latStaticText.Wrap( -1 )
+        orbitSizerLeft.Add( self.latStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerLeft.AddSpacer(10)
+        
+        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.hStaticText.Wrap( -1 )
+        orbitSizerLeft.Add( self.hStaticText, 0, wx.ALL, 5 )
+        
+        
+        satelliteStaticbox.Add( orbitSizerLeft, 0, wx.EXPAND, 1 )
+        
+        orbitSizerRight = wx.BoxSizer( wx.VERTICAL )
         
         choiceChoices = [ u"Global Map (groundtrack)", u"Local Map (azimuth/elevation)" ]
         self.choice = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
-        modeSelectionSizer.Add( self.choice, 0, wx.ALL, 5 )
+        orbitSizerRight.Add( self.choice, 0, wx.ALL, 5 )
 
-        satelliteStaticbox.Add( modeSelectionSizer, 0, 0, 5 )
-        
         # Add spacer for a nicer view
-        satelliteStaticbox.AddSpacer(10)
-        
+        orbitSizerRight.AddSpacer(5)
 
-        #PRN
-        satSizer2 = wx.BoxSizer( wx.HORIZONTAL )
-        self.prnStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter prn number of SV (eg: 01, 02, 15):", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.prnStaticText.Wrap( -1 )
-        satSizer2.Add( self.prnStaticText, 0, wx.ALL, 5 )
-        
-        self.prnTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer2.Add( self.prnTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer2, 0, wx.ALL, 5 )
+        self.prnTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
+        orbitSizerRight.Add( self.prnTextCtrl, 0, wx.ALL, 5 )
 
-        #PRN scroll
-        # self.orbitChoicesChoices = [ u" " ]
-        # # self.orbitChoicesChoices.extend( MainFrame.onOpen.satellitePRN )
-        # self.orbitChoices = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, self.orbitChoicesChoices, wx.CB_SORT )
-        # satSizer2.Add( self.orbitChoices, 0, wx.ALL, 5 )
-        
-        #Text
-        #satelliteStaticbox.AddSpacer(10)
-        satSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-        self.refStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Enter position of reference point (deg, m)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.refStaticText.Wrap( -1 )
-        satSizer3.Add( self.refStaticText, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer3, 0, wx.ALL, 5 )
-        
-        #longitude λ
-        satSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-        self.longStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude:", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.longStaticText.Wrap( -1 )
-        satSizer4.Add( self.longStaticText, 0, wx.ALL, 5 )
-        self.longTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer4.Add( self.longTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer4, 0, wx.ALL, 5 )
-        
-        #latitude φ
-        satSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-        self.latStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude:    ", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.latStaticText.Wrap( -1 )
-        satSizer5.Add( self.latStaticText, 0, wx.ALL, 5 )
-        self.latTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer5.Add( self.latTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer5, 0, wx.ALL, 5 )
-        
-        #height h
-        satSizer6 = wx.BoxSizer( wx.HORIZONTAL )
-        self.hStaticText = wx.StaticText( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Height:      ", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.hStaticText.Wrap( -1 )
-        satSizer6.Add( self.hStaticText, 0, wx.ALL, 5 )
-        self.hTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        satSizer6.Add( self.hTextCtrl, 0, wx.ALL, 5 )
-        satelliteStaticbox.Add( satSizer6, 0, wx.ALL, 5 )
-        
-        satelliteStaticbox.AddSpacer(12)
+        # Add spacer for a nicer view
+        orbitSizerRight.AddSpacer(35)
 
         
-        #Proceed button
-        #satelliteStaticbox.AddSpacer(150)
+        self.longTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
+        orbitSizerRight.Add( self.longTextCtrl, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerRight.AddSpacer(5)
+        
+        self.latTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
+        orbitSizerRight.Add( self.latTextCtrl, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        orbitSizerRight.AddSpacer(5)
+        
+        self.hTextCtrl = wx.TextCtrl( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
+        orbitSizerRight.Add( self.hTextCtrl, 0, wx.ALL, 5 )
+        
+        
+        satelliteStaticbox.Add( orbitSizerRight, 0, wx.ALL, 5 )
+        
+        
         self.orbitPoceedButton = wx.Button( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
-        satelliteStaticbox.Add( self.orbitPoceedButton, 0, wx.ALL, 5 )
+        satelliteStaticbox.Add( self.orbitPoceedButton, 0, wx.ALIGN_BOTTOM|wx.ALL, 5 )
         
+
         #Show relevant boxes only after mode selection
         wx.CallAfter(self.prnStaticText.Show, False)
         wx.CallAfter(self.prnTextCtrl.Show, False)
@@ -346,6 +357,7 @@ class orbitNoteBookPanel(wx.Panel):
         wx.CallAfter(self.latTextCtrl.Show, False)
         wx.CallAfter(self.hStaticText.Show, False)
         wx.CallAfter(self.hTextCtrl.Show, False)
+        wx.CallAfter(self.orbitPoceedButton.Show, False)
 
         # Connected events
         self.choice.Bind( wx.EVT_CHOICE, self.OnChoice )
@@ -359,7 +371,7 @@ class orbitNoteBookPanel(wx.Panel):
         try:
             #plt.clf()  #clears figure
             filePath = MainFrame.onOpen.filePath
-            if os.path.splitext(filePath)[1] != '.rnx':
+            if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
                 dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -382,7 +394,7 @@ class orbitNoteBookPanel(wx.Panel):
             return
         
         
-        if self.choice.GetStringSelection() == 'Global Map (groundtrack)':
+        if self.choice.GetStringSelection() ==  "Global Map (groundtrack)":
             #ORBIT
             satelliteOrbit = SatelliteInfo( filePath, userPRN, 0, 0, 0, False )
             
@@ -437,6 +449,7 @@ class orbitNoteBookPanel(wx.Panel):
             self.latTextCtrl.Show(True)
             self.hStaticText.Show(True)
             self.hTextCtrl.Show(True)
+            self.orbitPoceedButton.Show(True) 
         else:
             self.prnStaticText.Show(True)
             self.prnTextCtrl.Show(True)
@@ -447,6 +460,7 @@ class orbitNoteBookPanel(wx.Panel):
             self.latTextCtrl.Show(False)
             self.hStaticText.Show(False)
             self.hTextCtrl.Show(False)
+            self.orbitPoceedButton.Show(True)
             
         
 
@@ -461,7 +475,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         noteBookSizer = wx.BoxSizer( wx.HORIZONTAL )
         
         # Create the static box for receiving parameters for the functionalities
-        ionosphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Ionosphere Parameters" ), wx.VERTICAL )
+        ionosphereStaticbox = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Ionosphere Parameters" ), wx.HORIZONTAL )
         
         # Add the static box to the sizer
         noteBookSizer.Add( ionosphereStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
@@ -471,161 +485,131 @@ class ionosphereNoteBookPanel(wx.Panel):
         ionosphereStaticbox.AddSpacer(10)
 
 
-        # ----------------------------- MODE -----------------------------#
-        modeSelectionSizer = wx.BoxSizer( wx.HORIZONTAL )
+        ionoSizerLeft = wx.BoxSizer( wx.VERTICAL )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(5)
         
-        self.choiceStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Preferred Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.choiceStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Prefered Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.choiceStaticText.Wrap( -1 )
-        modeSelectionSizer.Add( self.choiceStaticText, 0, wx.ALL, 5 )
+        ionoSizerLeft.Add( self.choiceStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(8)
+        
+
+        self.timeStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Time (HH: MM: SS):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.timeStaticText.Wrap( -1 )
+        ionoSizerLeft.Add( self.timeStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(10)
+        
+        
+        self.elevStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Elevation (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.elevStaticText.Wrap( -1 )
+        ionoSizerLeft.Add( self.elevStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(10)
+        
+        
+        self.azStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Azimuth (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.azStaticText.Wrap( -1 )
+        ionoSizerLeft.Add( self.azStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(10)
+        
+        
+        self.longStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.longStaticText.Wrap( -1 )
+        ionoSizerLeft.Add( self.longStaticText, 0, wx.ALL, 5 )
+
+        # Add spacer for a nicer view
+        ionoSizerLeft.AddSpacer(10)
+        
+        
+        self.latStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude (Deg Decimal):", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.latStaticText.Wrap( -1 )
+        ionoSizerLeft.Add( self.latStaticText, 0, wx.ALL, 5 )
+        
+        
+        ionosphereStaticbox.Add( ionoSizerLeft, 0, wx.EXPAND, 5 )
+
+
+
+        # -----------------------------------------
+        ionoSizerRight = wx.BoxSizer( wx.VERTICAL )
         
         choiceChoices = [ u"Global Map", u"Local Map" ]
         self.choice = wx.Choice( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
-        modeSelectionSizer.Add( self.choice, 0, wx.ALL, 5 )
+        ionoSizerRight.Add( self.choice, 0, wx.ALL, 5 )
 
-        ionosphereStaticbox.Add( modeSelectionSizer, 0, 0, 5 )
-        
         # Add spacer for a nicer view
-        ionosphereStaticbox.AddSpacer(10)
+        ionoSizerRight.AddSpacer(3)
 
-        
-        # ----------------------------- TIME -----------------------------#
         timeSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.timeStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Time (HH:MM:SS)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.timeStaticText.Wrap( -1 )
-        timeSizer.Add( self.timeStaticText, 0, wx.ALL, 5 )
 
-        self.timeHHControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=24, initial=0)
+        self.timeHHControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", (wx.DefaultPosition), wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=23, initial=0)
         timeSizer.Add( self.timeHHControl, 0, wx.ALL, 5 )
 
-        self.timeMMControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0)
+        self.timeMMControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=59, initial=0)
         timeSizer.Add( self.timeMMControl, 0, wx.ALL, 5 )
 
-        self.timeSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0)
+        self.timeSSControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=59, initial=0)
         timeSizer.Add( self.timeSSControl, 0, wx.ALL, 5 )
         
-       
-        ionosphereStaticbox.Add( timeSizer, 0, 0, 5 )
-
-        # ----------------------------- ELEVATION -----------------------------#
         
+        ionoSizerRight.Add( timeSizer, 0, 0, 5 )
+
         # Add spacer for a nicer view
-        ionosphereStaticbox.AddSpacer(10)
-
-        elevSizer = wx.BoxSizer( wx.HORIZONTAL )
+        ionoSizerRight.AddSpacer(2)
         
-        self.elevStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Elevation angle (deg, min, sec)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.elevStaticText.Wrap( -1 )
-        elevSizer.Add( self.elevStaticText, 0, wx.ALL, 5 )
+        self.elevTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        ionoSizerRight.Add( self.elevTextCtrl, 0, wx.ALL, 5 )
 
-        self.elevDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=90, initial=0 )
-        elevSizer.Add( self.elevDegControl, 0, wx.ALL, 5 )
-
-        self.elevMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
-        elevSizer.Add( self.elevMinControl, 0, wx.ALL, 5 )
-
-        self.elevSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001)
-        elevSizer.Add( self.elevSSControl, 0, wx.ALL, 5 )
-
-        ionosphereStaticbox.Add( elevSizer, 0, 0, 5 )
-
-        
-        # ----------------------------- AZIMUTH -----------------------------#
         # Add spacer for a nicer view
-        ionosphereStaticbox.AddSpacer(10)
+        ionoSizerRight.AddSpacer(4)
         
-        azimuthSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.azStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Azimuth (deg, min, sec)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.azStaticText.Wrap( -1 )
-        azimuthSizer.Add( self.azStaticText, 0, wx.ALL, 5 )
+        self.azTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        ionoSizerRight.Add( self.azTextCtrl, 0, wx.ALL, 5 )
 
-        self.azDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-180, max=180, initial=0 )
-        azimuthSizer.Add( self.azDegControl, 0, wx.ALL, 5 )
-
-        self.azMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
-        azimuthSizer.Add( self.azMinControl, 0, wx.ALL, 5 )
-
-        self.azSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001)
-        azimuthSizer.Add( self.azSSControl, 0, wx.ALL, 5 )
-
- 
-        ionosphereStaticbox.Add( azimuthSizer, 0, wx.EXPAND, 5 )
-
-        
-
-        # ----------------------------- LONGITUDE -----------------------------#
-        
         # Add spacer for a nicer view
-        ionosphereStaticbox.AddSpacer(10)
-
-        longSizer = wx.BoxSizer( wx.HORIZONTAL )
+        ionoSizerRight.AddSpacer(5)
         
-        self.longStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Longitude (deg, min, sec)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.longStaticText.Wrap( -1 )
-        longSizer.Add( self.longStaticText, 0, wx.ALL, 5 )
-        
-        self.longDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-180, max=180, initial=0 )
-        longSizer.Add( self.longDegControl, 0, wx.ALL, 5 )
+        self.longTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        ionoSizerRight.Add( self.longTextCtrl, 0, wx.ALL, 5 )
 
-        self.longMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
-        longSizer.Add( self.longMinControl, 0, wx.ALL, 5 )
-
-        self.longSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP , min=0, max=60, initial=0, inc=0.001)
-        longSizer.Add( self.longSSControl, 0, wx.ALL, 5 )
-        
-        
-        ionosphereStaticbox.Add( longSizer, 0, 0, 5 )
-
-
-        # ----------------------------- LATITUDE -----------------------------#
         # Add spacer for a nicer view
-        ionosphereStaticbox.AddSpacer(10)
-
-        latitudeSizer = wx.BoxSizer( wx.HORIZONTAL )
+        ionoSizerRight.AddSpacer(7)
         
-        self.latStaticText = wx.StaticText( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Latitude (deg, min, sec)", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.latStaticText.Wrap( -1 )
-        latitudeSizer.Add( self.latStaticText, 0, wx.ALL, 5 )
-        
-        self.latDegControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=-90, max=90, initial=0 )
-        latitudeSizer.Add( self.latDegControl, 0, wx.ALL, 5 )
-
-        self.latMinControl = wx.SpinCtrl(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0 )
-        latitudeSizer.Add( self.latMinControl, 0, wx.ALL, 5 )
-
-        self.latSSControl = wx.SpinCtrlDouble(ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"00", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS | wx.SP_WRAP, min=0, max=60, initial=0, inc=0.001 )
-        latitudeSizer.Add( self.latSSControl, 0, wx.ALL, 5 )
+        self.latTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        ionoSizerRight.Add( self.latTextCtrl, 0, wx.ALL, 5 )
         
         
-        ionosphereStaticbox.Add( latitudeSizer, 0, 0, 5 )
+        ionosphereStaticbox.Add( ionoSizerRight, 1, wx.EXPAND, 5 )
 
+        self.proceedButton = wx.Button( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
+        ionosphereStaticbox.Add( self.proceedButton, 0, wx.ALIGN_BOTTOM|wx.ALL, 5 )
 
+        
+     
         # Show the relevant boxes after the mode has been selected by the user
         wx.CallAfter(self.timeStaticText.Show, False)
         wx.CallAfter(self.timeHHControl.Show, False)
         wx.CallAfter(self.timeMMControl.Show, False)
         wx.CallAfter(self.timeSSControl.Show, False)
         wx.CallAfter(self.elevStaticText.Show, False)
-        wx.CallAfter(self.elevDegControl.Show, False)
-        wx.CallAfter(self.elevMinControl.Show, False)
-        wx.CallAfter(self.elevSSControl.Show, False)
+        wx.CallAfter(self.elevTextCtrl.Show, False)
         wx.CallAfter(self.azStaticText.Show, False)
-        wx.CallAfter(self.azDegControl.Show, False)
-        wx.CallAfter(self.azMinControl.Show, False)
-        wx.CallAfter(self.azSSControl.Show, False)
+        wx.CallAfter(self.azTextCtrl.Show, False)
         wx.CallAfter(self.longStaticText.Show, False)
-        wx.CallAfter(self.longDegControl.Show, False)
-        wx.CallAfter(self.longMinControl.Show, False)
-        wx.CallAfter(self.longSSControl.Show, False)
+        wx.CallAfter(self.longTextCtrl.Show, False)
         wx.CallAfter(self.latStaticText.Show, False)
-        wx.CallAfter(self.latDegControl.Show, False)
-        wx.CallAfter(self.latMinControl.Show, False)
-        wx.CallAfter(self.latSSControl.Show, False)
-
-        ionosphereStaticbox.AddSpacer(15)
-        self.proceedButton = wx.Button( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, u"Proceed", wx.DefaultPosition, wx.DefaultSize, 0 )
-        ionosphereStaticbox.Add( self.proceedButton, 0, wx.ALL, 5 )
+        wx.CallAfter(self.latTextCtrl.Show, False)
+        wx.CallAfter(self.proceedButton.Show, False)
+        
         
 
 
@@ -637,9 +621,10 @@ class ionosphereNoteBookPanel(wx.Panel):
         self.Layout()
 
     def IonosphereCompute( self, event ):
+        
         try:
             filePath = MainFrame.onOpen.filePath
-            if os.path.splitext(filePath)[1] != '.rnx':
+            if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
                 dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -663,63 +648,106 @@ class ionosphereNoteBookPanel(wx.Panel):
         
         # ---------------------PLOT IONO MAP -----------------------------------------
         if self.choice.GetStringSelection() == 'Local Map':
-            elevation = np.linspace(0, 90, 181)
-            azimuth = np.linspace(-180, 180, 721)
-            longitude = self.longDegControl.GetValue() + self.longMinControl.GetValue() / 60 + self.longSSControl.GetValue() / 3600
-            latitude = self.latDegControl.GetValue() + self.latMinControl.GetValue() / 60 + self.latSSControl.GetValue() / 3600
-            time = self.timeHHControl.GetValue() * 60 * 60 + self.timeMMControl.GetValue() * 60 + self.timeSSControl.GetValue()
+
             
-            stationPoints = np.zeros((len(elevation), len(azimuth)))
+            try:
+                # Check that the parameters are not empty
+                if self.longTextCtrl.GetValue() == '' or self.latTextCtrl.GetValue() == '':
+                    dlg = wx.MessageDialog(None, 'Check that all paramter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+                elevation = np.linspace(0, 90, 181)
+                azimuth = np.linspace(-180, 180, 721)
+                longitude = float(self.longTextCtrl.GetValue())
+                latitude = float(self.latTextCtrl.GetValue())
 
-            for elev in range(len(elevation)):
-                for azim in range(len(azimuth)):
-                    stationPoints[elev][azim] = iono(latitude, longitude, azimuth[azim], elevation[elev], time, ionoParams[0])
-            
-            x,y = np.meshgrid(azimuth, elevation)
+                # Check the range of the entered values
+                if longitude > 180 or longitude < -180 or latitude > 90 or latitude < -90:
+                    dlg = wx.MessageDialog(None, 'Value entered is out of range', 'Value error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
 
-            x = np.flip( x * np.pi / 180, 1)
-            y = y * np.pi / 180
+                time = self.timeHHControl.GetValue() * 60 * 60 + self.timeMMControl.GetValue() * 60 + self.timeSSControl.GetValue()
+                
+                stationPoints = np.zeros((len(elevation), len(azimuth)))
 
-            stationPoints = np.flip( stationPoints, (0, 1) )
+                for elev in range(len(elevation)):
+                    for azim in range(len(azimuth)):
+                        stationPoints[elev][azim] = iono(latitude, longitude, azimuth[azim], elevation[elev], time, ionoParams[0])
+                
+                x,y = np.meshgrid(azimuth, elevation)
 
-            fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
-            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
-            ax2.set_theta_zero_location('N')
-            ax2.set_theta_direction(-1)
-            ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
-            ax2.set_ylim(0, np.pi/2)
-            ax2.set_rticks([np.pi/2, np.pi/2.4, np.pi/3, np.pi/4, np.pi/6, np.pi/12, 0])
-            ax2.set_xticklabels(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])
-            ax2.set_yticklabels(['0\u00B0', '15\u00B0', '30\u00B0', '45\u00B0', '60\u00B0', '75\u00B0', '90\u00B0'])
-            
+                x = np.flip( x * np.pi / 180, 1)
+                y = y * np.pi / 180
+
+                stationPoints = np.flip( stationPoints, (0, 1) )
+
+                fig1, ax2 = plt.subplots(subplot_kw=dict(projection='polar'), constrained_layout=False)
+                CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
+                ax2.set_theta_zero_location('N')
+                ax2.set_theta_direction(-1)
+                ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
+                ax2.set_ylim(0, np.pi/2)
+                ax2.set_rticks([np.pi/2, np.pi/2.4, np.pi/3, np.pi/4, np.pi/6, np.pi/12, 0])
+                ax2.set_xticklabels(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])
+                ax2.set_yticklabels(['0\u00B0', '15\u00B0', '30\u00B0', '45\u00B0', '60\u00B0', '75\u00B0', '90\u00B0'])
+            except Exception as err:
+                dlg = wx.MessageDialog(None, 'Only numerical values are allowed', 'Data type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
 
         else:
-            elevation = self.elevDegControl.GetValue() + self.elevMinControl.GetValue() / 60 + self.elevSSControl.GetValue() / 3600
-            azimuth = self.azDegControl.GetValue() + self.azMinControl.GetValue() / 60 + self.azSSControl.GetValue() / 3600
-            longitude = np.linspace(-180, 180, 721) 
-            latitude = np.linspace(-90, 90, 361) 
-            time = self.timeHHControl.GetValue() * 60 * 60 + self.timeMMControl.GetValue() * 60 + self.timeSSControl.GetValue()
-            
-            stationPoints = np.zeros((len(latitude), len(longitude)))
-            
-            
-            for lat in range(len(latitude)):
-                for longit in range(len(longitude)):
-                    stationPoints[lat][longit] = iono(latitude[lat], longitude[longit], azimuth, elevation, time, ionoParams[0])
-            
-            x,y = np.meshgrid(longitude, latitude)
-            
-            fig1, ax2 = plt.subplots(constrained_layout=False)
+            try:
+                # Check that the parameters are not empty
+                if self.elevTextCtrl.GetValue() == '' or self.azTextCtrl.GetValue() == '':
+                    dlg = wx.MessageDialog(None, 'Check that all paramter values are entered', 'Parameter Empty', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
 
-            CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
-        
-            ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
-            ax2.set_xlabel('Longitude (\u00B0)')
-            ax2.set_ylabel('Latitude (\u00B0)')
-            ax2.set_xlim([-180, 180])
-            ax2.set_ylim([-90, 90])
-            worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
-            worldMap.plot(ax=ax2, facecolor='none', edgecolor='black', lw=0.15)
+                elevation = float(self.elevTextCtrl.GetValue())
+                azimuth = float(self.azTextCtrl.GetValue())
+                longitude = np.linspace(-180, 180, 721) 
+                latitude = np.linspace(-90, 90, 361) 
+                time = self.timeHHControl.GetValue() * 60 * 60 + self.timeMMControl.GetValue() * 60 + self.timeSSControl.GetValue()
+                
+                # Check the range of the entered values
+                if elevation > 90 or elevation < 0 or azimuth > 180 or azimuth < -180:
+                    dlg = wx.MessageDialog(None, 'Value entered is out of range', 'Value error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
+
+                stationPoints = np.zeros((len(latitude), len(longitude)))
+                
+                
+                for lat in range(len(latitude)):
+                    for longit in range(len(longitude)):
+                        stationPoints[lat][longit] = iono(latitude[lat], longitude[longit], azimuth, elevation, time, ionoParams[0])
+                
+                x,y = np.meshgrid(longitude, latitude)
+                
+                fig1, ax2 = plt.subplots(constrained_layout=False)
+
+                CS = ax2.contourf(x, y, stationPoints, 100, cmap=cm.jet)
+            
+                ax2.set_title('Ionospheric delay at time = {} : {} : {} '.format( self.timeHHControl.GetValue(), self.timeMMControl.GetValue(), self.timeSSControl.GetValue()))
+                ax2.set_xlabel('Longitude (\u00B0)')
+                ax2.set_ylabel('Latitude (\u00B0)')
+                ax2.set_xlim([-180, 180])
+                ax2.set_ylim([-90, 90])
+                worldMap = gpd.read_file(r'worldMap/ne_10m_admin_0_countries.shp')
+                worldMap.plot(ax=ax2, facecolor='none', edgecolor='black', lw=0.15)
+            except Exception as err:
+                dlg = wx.MessageDialog(None, 'Only numerical values are allowed', 'Data Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
 
         cbar = plt.colorbar(CS)
         cbar.ax.set_ylabel('[m]')
@@ -735,42 +763,29 @@ class ionosphereNoteBookPanel(wx.Panel):
             self.timeMMControl.Show(True)
             self.timeSSControl.Show(True)
             self.elevStaticText.Show(False)
-            self.elevDegControl.Show(False)
-            self.elevMinControl.Show(False)
-            self.elevSSControl.Show(False)
+            self.elevTextCtrl.Show(False)
             self.azStaticText.Show(False)
-            self.azDegControl.Show(False)
-            self.azMinControl.Show(False)
-            self.azSSControl.Show(False)
+            self.azTextCtrl.Show(False)
             self.longStaticText.Show(True)
-            self.longDegControl.Show(True)
-            self.longMinControl.Show(True)
-            self.longSSControl.Show(True)
+            self.longTextCtrl.Show(True)
             self.latStaticText.Show(True)
-            self.latDegControl.Show(True)
-            self.latMinControl.Show(True)
-            self.latSSControl.Show(True)
+            self.latTextCtrl.Show(True)
+            self.proceedButton.Show(True)
+            
         else:
             self.timeStaticText.Show(True)
             self.timeHHControl.Show(True)
             self.timeMMControl.Show(True)
             self.timeSSControl.Show(True)
             self.elevStaticText.Show(True)
-            self.elevDegControl.Show(True)
-            self.elevMinControl.Show(True)
-            self.elevSSControl.Show(True)
+            self.elevTextCtrl.Show(True)
             self.azStaticText.Show(True)
-            self.azDegControl.Show(True)
-            self.azMinControl.Show(True)
-            self.azSSControl.Show(True)
+            self.azTextCtrl.Show(True)
             self.longStaticText.Show(False)
-            self.longDegControl.Show(False)
-            self.longMinControl.Show(False)
-            self.longSSControl.Show(False)
+            self.longTextCtrl.Show(False)
             self.latStaticText.Show(False)
-            self.latDegControl.Show(False)
-            self.latMinControl.Show(False)
-            self.latSSControl.Show(False)
+            self.latTextCtrl.Show(False)
+            self.proceedButton.Show(True)
 
  
 ###########################################################################
