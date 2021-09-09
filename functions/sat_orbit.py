@@ -138,7 +138,6 @@ class SatelliteInfo():
             
             # Fixed values
             pi=math.atan(1)*4
-            #A_ref=26559710   #semimajor axis reference   #meters
             capital_omega_dot_ref=-2.6*10**(-9)   #rate ascension rate reference   #semicircles/sec
             earth_grav_const=3.986005 * 10**14   #m^3/s^2
             earth_rotation_rate=7.2921151467 * 10**(-5)   #WGS84   #rad/s
@@ -295,9 +294,9 @@ class SatelliteInfo():
         #----Preparing parameters for azimuth/elevation computations----#
         #cartesian coordinates of ref. point
         if check is True:
-            lat_ref_rad=float(lat_ref)*math.pi/180   #radians for calculation
-            long_ref_rad=float(long_ref)*math.pi/180
-            h_ref_rad=float(h_ref)*math.pi/180
+            lat_ref_rad=float(lat_ref)*pi/180   #radians for calculation
+            long_ref_rad=float(long_ref)*pi/180
+            h_ref_rad=float(h_ref)*pi/180
             (x_ref, y_ref, z_ref)=geod2cart(float(lat_ref_rad), float(long_ref_rad), float(h_ref_rad))
             R0=np.array([[-math.sin(long_ref_rad),  math.cos(long_ref_rad), 0], 
                          [-math.sin(lat_ref_rad)*math.cos(long_ref_rad),  -math.sin(lat_ref_rad)*math.sin(long_ref_rad),   math.cos(lat_ref_rad)], 
@@ -332,8 +331,8 @@ class SatelliteInfo():
 
                 (lat, long, h)=cart2geod(float(sv_x), float(sv_y), float(sv_z))
             
-                long_deg=long*180/math.pi   #lambda
-                lat_deg=lat*180/math.pi   #phi
+                long_deg=long*180/pi   #lambda
+                lat_deg=lat*180/pi   #phi
 
                 self.sv_lat.append(lat_deg)
                 self.sv_long.append(long_deg)
@@ -349,12 +348,12 @@ class SatelliteInfo():
                 
                     #compute azimuth
                     azimuth=math.atan2(east, north)
-                    azimuth_deg=azimuth*180/math.pi
+                    azimuth_deg=azimuth*180/pi
                     self.sv_azimuth.append(azimuth_deg)
                 
                     #compute elevation
                     elevation=math.atan2(up, math.sqrt(east**2 + north**2))
-                    elevation_deg=elevation*180/math.pi
+                    elevation_deg=elevation*180/pi
                     self.sv_elevation.append(elevation_deg)
                     
         self.first_datetime=self.sv_datetimes[0]    
