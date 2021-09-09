@@ -44,7 +44,8 @@ class MainFrame ( wx.Frame ):
         
         vSizer = wx.BoxSizer( wx.VERTICAL )     # Horinzontal box sizer
         hSizer = wx.BoxSizer( wx.HORIZONTAL )     # Vertival box sizer
-     
+
+        
         self.SetSizer( vSizer )
         self.Layout()
         
@@ -187,7 +188,7 @@ class MainFrame ( wx.Frame ):
                         return
 
                     # check that the file is a navigation message file
-                    if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) or ((word[1][0]!='N') and (word[5][0]!='G')):
+                    if ((word[1] != 'NAVIGATION') and (word[3] != 'G')) and ((word[1][0]!='N') and (word[5][0]!='G')):
                         dlg = wx.MessageDialog(None, 'Selected file is not of Navigation message type', 'File type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                         dlg.ShowModal()
                         dlg.Destroy()
@@ -205,7 +206,7 @@ class MainFrame ( wx.Frame ):
         ionoParams = readIono( MainFrame.onOpen.filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Please note that the selected file does not have Ionospheric  Correction Parameters', 'Alert', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return    
@@ -387,7 +388,7 @@ class orbitNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -403,11 +404,11 @@ class orbitNoteBookPanel(wx.Panel):
             #ax.coastlines()
             ax.gridlines()
             
-            #plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro--', linewidth=2, markersize=7, transform=ccrs.Geodetic())
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'bo', markersize=7, transform=ccrs.Geodetic())
-            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'r', linewidth=3, transform=ccrs.Geodetic())
+            plt.plot(satelliteOrbit.sv_long, satelliteOrbit.sv_lat, 'ro', markersize=7, transform=ccrs.Geodetic())
             font1={'family':'serif','color':'black','size':15}
-            plt.title('Satellite G'+str(userPRN)+'\n(from '+str(satelliteOrbit.first_datetime)+' to '+str(satelliteOrbit.last_datetime)+')', fontdict=font1)
+            first_epc=str(satelliteOrbit.fe_year)+'/'+str(satelliteOrbit.fe_month)+'/'+str(satelliteOrbit.fe_day)+'-'+str(satelliteOrbit.fe_hour)+':'+str(satelliteOrbit.fe_minute)+':'+str(satelliteOrbit.fe_second)
+            last_epc=str(satelliteOrbit.le_year)+'/'+str(satelliteOrbit.le_month)+'/'+str(satelliteOrbit.le_day)+'-'+str(satelliteOrbit.le_hour)+':'+str(satelliteOrbit.le_minute)+':'+str(satelliteOrbit.le_second)
+            plt.title('Satellite G'+str(userPRN)+'\n(from '+first_epc+'  to '+last_epc+')', fontdict=font1)
             #plt.suptitle()
         
         else:
@@ -418,21 +419,22 @@ class orbitNoteBookPanel(wx.Panel):
 
             angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
             
-            #Azimuth and elevation
-            font1={'family':'serif','color':'black','size':16}
+            #Azimuth
+            plt.figure()
+            plt.plot(angles.sv_datetimes, angles.sv_azimuth, 'r', linewidth=2)
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(angles.first_epoch)
+            last_epc=str(angles.last_epoch)
+            plt.title('Satellite G'+str(userPRN)+': Azimuth\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
             
-            fig, (ax1, ax2) = plt.subplots(2, 1)
-            fig.suptitle('Satellite: G'+str(userPRN), size=20)
-
-            ax1.plot(angles.sv_datetimes, angles.sv_azimuth, 'ro--', linewidth=2)
-            ax1.set_ylabel('Azimuth', fontdict=font1)
-            ax1.grid()
-
-            ax2.plot(angles.sv_datetimes, angles.sv_elevation, 'bo--', linewidth=2)
-            ax2.set_xlabel('Time', fontdict=font1)
-            ax2.set_ylabel('Elevation', fontdict=font1)
-            ax2.grid()
-
+            #elevation
+            plt.figure()
+            plt.plot(angles.sv_datetimes, angles.sv_elevation, 'r', linewidth=2)
+            font1={'family':'serif','color':'black','size':15}
+            first_epc=str(angles.first_epoch)
+            last_epc=str(angles.last_epoch)
+            plt.title('Satellite G'+str(userPRN)+': Elevation\n(from  '+first_epc+'  to  '+last_epc+')', fontdict=font1)
+       
 
 
     def OnChoice (self, event):
@@ -623,7 +625,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         try:
             filePath = MainFrame.onOpen.filePath
             if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
-                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -706,7 +708,7 @@ class ionosphereNoteBookPanel(wx.Panel):
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
-
+                    
                 elevation = float(self.elevTextCtrl.GetValue())
                 azimuth = float(self.azTextCtrl.GetValue())
                 longitude = np.linspace(-180, 180, 721) 
