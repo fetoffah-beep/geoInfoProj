@@ -138,7 +138,6 @@ class SatelliteInfo():
             
             # Fixed values
             pi=math.atan(1)*4
-            #A_ref=26559710   #semimajor axis reference   #meters
             capital_omega_dot_ref=-2.6*10**(-9)   #rate ascension rate reference   #semicircles/sec
             earth_grav_const=3.986005 * 10**14   #m^3/s^2
             earth_rotation_rate=7.2921151467 * 10**(-5)   #WGS84   #rad/s
@@ -254,9 +253,8 @@ class SatelliteInfo():
                    
                 # Print
                 prn_str=str(prn)
-                prn_str_adj=prn_str.zfill(2)
-                sv_prn='G'+prn_str_adj   
-                #sat_values=[sv_prn, int(time_from_eph_rt), x, y, z, x_vel, y_vel, z_vel]
+                prn_str_zero=prn_str.zfill(2)
+                sv_prn='G'+prn_str_zero
                 
                 #write epoch (year month day hour minute second)
                 epoch_print=[yr, m, d, h, min, second]
@@ -273,12 +271,12 @@ class SatelliteInfo():
                             velocities.remove(elem) 
 
                 #write on array epoch + positions
-                current_positions=[epoch_print, sv_prn, x, y, z]
-                positions.append(current_positions)
-                current_velocities=[epoch_print, sv_prn, x_vel, y_vel, z_vel]
-                velocities.append(current_velocities)
+                current_position=[epoch_print, sv_prn, x, y, z]
+                positions.append(current_position)
+                current_velocity=[epoch_print, sv_prn, x_vel, y_vel, z_vel]
+                velocities.append(current_velocity)
                 
-
+                
         positions.sort()
         velocities.sort()
         
@@ -291,21 +289,32 @@ class SatelliteInfo():
             for item in velocities:
                 file2.write("%s\n" % item)
                 
+                         
 
-        #splitting values into vectors
+        #----Preparing parameters for azimuth/elevation computations----#
+        #cartesian coordinates of ref. point
+        if check is True:
+            lat_ref_rad=float(lat_ref)*pi/180   #radians for calculation
+            long_ref_rad=float(long_ref)*pi/180
+            h_ref_rad=float(h_ref)*pi/180
+            (x_ref, y_ref, z_ref)=geod2cart(float(lat_ref_rad), float(long_ref_rad), float(h_ref_rad))
+            R0=np.array([[-math.sin(long_ref_rad),  math.cos(long_ref_rad), 0], 
+                         [-math.sin(lat_ref_rad)*math.cos(long_ref_rad),  -math.sin(lat_ref_rad)*math.sin(long_ref_rad),   math.cos(lat_ref_rad)], 
+                         [math.cos(lat_ref_rad)*math.cos(long_ref_rad),  math.cos(lat_ref_rad)*math.sin(long_ref_rad),  math.sin(lat_ref_rad)]
+                    ])
+            self.sv_azimuth=[]
+            self.sv_elevation=[]
+        #---------------------------------------------------------------#
+                
+
+        #----Conversion to geodetic coordinates and angles computations----#
         prn_used='G'+str(self.sv_number)
-        #print(prn_used)
-        sv_x=[]
-        sv_y=[]
-        sv_z=[]
-        self.sv_epoch=[]
+        self.sv_lat=[]
+        self.sv_long=[]
         self.sv_datetimes=[]
-        count=0
-        current_epoch=...
+        
         for item in positions:
             if item[1]==prn_used:
-                #print(item)
-                self.sv_epoch.append(item[0])
                 year=str(item[0][0])
                 month=str(item[0][1])
                 day=str(item[0][2])
@@ -315,85 +324,38 @@ class SatelliteInfo():
                 epoch_str=year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second
                 datetime_object=datetime.strptime(epoch_str, '%Y/%m/%d %H:%M:%S')
                 self.sv_datetimes.append(datetime_object)
+                    
+                sv_x=item[2]
+                sv_y=item[3]
+                sv_z=item[4]
 
-                sv_x.append(item[2])
-                sv_y.append(item[3])
-                sv_z.append(item[4])
-                if count==0:
-                    self.first_epoch=item[0]
-                    self.fe_year=self.first_epoch[0]
-                    self.fe_month=self.first_epoch[1]
-                    self.fe_day=self.first_epoch[2]
-                    self.fe_hour=self.first_epoch[3]
-                    self.fe_minute=self.first_epoch[4]
-                    self.fe_second=self.first_epoch[5]
-                    count +=1
-                else:
-                    current_epoch=item[0]
-        self.last_epoch=current_epoch
-        self.le_year=self.last_epoch[0]
-        self.le_month=self.last_epoch[1]
-        self.le_day=self.last_epoch[2]
-        self.le_hour=self.last_epoch[3]
-        self.le_minute=self.last_epoch[4]
-        self.le_second=self.last_epoch[5]
+                (lat, long, h)=cart2geod(float(sv_x), float(sv_y), float(sv_z))
+            
+                long_deg=long*180/pi   #lambda
+                lat_deg=lat*180/pi   #phi
 
-      
-        #----Preparing parameters for azimuth/elevation computations----#
-        #cartesian coordinates of ref. point
-        if check is True:
-            lat_ref_rad=float(lat_ref)*math.pi/180   #radians for calculation
-            long_ref_rad=float(long_ref)*math.pi/180
-            h_ref_rad=float(h_ref)*math.pi/180
-            (x_ref, y_ref, z_ref)=geod2cart(float(lat_ref_rad), float(long_ref_rad), float(h_ref_rad))
-            R0=np.array([[-math.sin(long_ref_rad),  math.cos(long_ref_rad), 0], 
-                         [-math.sin(lat_ref_rad)*math.cos(long_ref_rad),  -math.sin(lat_ref_rad)*math.sin(long_ref_rad),   math.cos(lat_ref_rad)], 
-                         [math.cos(lat_ref_rad)*math.cos(long_ref_rad),  math.cos(lat_ref_rad)*math.sin(long_ref_rad),  math.sin(lat_ref_rad)]
-                    ])
-            self.sv_azimuth=[]
-            self.sv_elevation=[]
-        #---------------------------------------------------------------#
-        
-
-        #-------Conversion to geodetic coordinates-------#
-        self.sv_lat=[]
-        self.sv_long=[]
-        for i in range(1, len(sv_x)+1):
-            x=sv_x[i-1]
-            y=sv_y[i-1]
-            z=sv_z[i-1]
-            
-            
-            (lat, long, h)=cart2geod(float(x), float(y), float(z))
-            
-            long_deg=long*180/math.pi   #lambda
-            lat_deg=lat*180/math.pi   #phi
-            
-            # R_n=a/math.sqrt(1-e**2*(math.sin(phi))**2)  
-            # h=r/math.cos(phi) - R_n                   
-            
-            self.sv_lat.append(lat_deg)
-            self.sv_long.append(long_deg)
-            
-            
-            #-------------Angles calculation--------------#
-            if check is True:
+                self.sv_lat.append(lat_deg)
+                self.sv_long.append(long_deg)
+                
+                #-------------Angles calculation--------------#
+                if check is True:
                 #conversion from GC baseline to LC
-                baseline=[x-x_ref, y-y_ref, z-z_ref]
-                lc=np.dot(R0, baseline)  #local cartesian coordinates #matrix product
-                east=lc[0]
-                north=lc[1]
-                up=lc[2]
+                    baseline=[sv_x-x_ref, sv_y-y_ref, sv_z-z_ref]
+                    lc=np.dot(R0, baseline)  #local cartesian coordinates #matrix product
+                    east=lc[0]
+                    north=lc[1]
+                    up=lc[2]
                 
-                #compute azimuth
-                azimuth=math.atan2(east, north)
-                azimuth_deg=azimuth*180/math.pi
-                self.sv_azimuth.append(azimuth_deg)
+                    #compute azimuth
+                    azimuth=math.atan2(east, north)
+                    azimuth_deg=azimuth*180/pi
+                    self.sv_azimuth.append(azimuth_deg)
                 
-                #compute elevation
-                elevation=math.atan2(up, math.sqrt(east**2 + north**2))
-                elevation_deg=elevation*180/math.pi
-                self.sv_elevation.append(elevation_deg)
-                
-                
-                
+                    #compute elevation
+                    elevation=math.atan2(up, math.sqrt(east**2 + north**2))
+                    elevation_deg=elevation*180/pi
+                    self.sv_elevation.append(elevation_deg)
+                    
+        self.first_datetime=self.sv_datetimes[0]    
+        self.last_datetime=self.sv_datetimes[-1]
+              
