@@ -341,7 +341,7 @@ class SatelliteInfo():
                 #-------------Angles calculation--------------#
                 if check is True:
                 #conversion from GC baseline to LC
-                    baseline=[x-x_ref, y-y_ref, z-z_ref]
+                    baseline=[sv_x-x_ref, sv_y-y_ref, sv_z-z_ref]
                     lc=np.dot(R0, baseline)  #local cartesian coordinates #matrix product
                     east=lc[0]
                     north=lc[1]
