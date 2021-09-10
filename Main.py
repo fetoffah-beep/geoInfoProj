@@ -388,7 +388,7 @@ class orbitNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -649,7 +649,7 @@ class ionosphereNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
