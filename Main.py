@@ -369,7 +369,6 @@ class orbitNoteBookPanel(wx.Panel):
 
     def OrbitCompute(self, event):
         try:
-            #plt.clf()  #clears figure
             filePath = MainFrame.onOpen.filePath
             if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
                 dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx | .*n)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
@@ -380,7 +379,15 @@ class orbitNoteBookPanel(wx.Panel):
             userPRN = self.prnTextCtrl.GetValue()
             availablePRN = MainFrame.onOpen.satellitePRN
             availablePRN.sort()
-            
+        
+            try:
+                numberPRN=int(userPRN)
+            except Exception as err:
+                dlg = wx.MessageDialog(None, 'PRN must be an integer number', 'Input Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return  
+        
             if userPRN not in availablePRN:
                 dlg = wx.MessageDialog(None, 'The SV PRN is not available. Available ones are: ' + ', '.join(availablePRN), 'PRN Unavilability', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
@@ -388,7 +395,7 @@ class orbitNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -649,7 +656,7 @@ class ionosphereNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -658,7 +665,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         ionoParams = readIono( filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Selected file does not have Ionospheric  Correction Parameters', 'Information', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file does not have Ionospheric Correction Parameters', 'Information', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
