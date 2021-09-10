@@ -129,12 +129,12 @@ class SatelliteInfo():
                     
             
             t=[]
-            #times (toe iniziale e +15s per 8 volte)
-            for i in range(1, 10):
+            #times (toe iniziale e +5s per 25 volte)
+            for i in range(1, 26):
                 if sec_diff !=0:
-                    t.append(toe+sec_diff+900*(i-1))
+                    t.append(toe+sec_diff+300*(i-1))
                 else: 
-                    t.append(toe+900*(i-1))  
+                    t.append(toe+300*(i-1))  
             
             # Fixed values
             pi=math.atan(1)*4
@@ -142,9 +142,9 @@ class SatelliteInfo():
             earth_grav_const=3.986005 * 10**14   #m^3/s^2
             earth_rotation_rate=7.2921151467 * 10**(-5)   #WGS84   #rad/s
             
-            for k in range(1, 10):
-                #to get 9 values in time, from start and then one every 15 minutes
-                min=minute+15*(k-1)
+            for k in range(1, 26):
+                #to get 25 values in time, from start and then one every 5 minutes (range of 2 hours)
+                min=minute+5*(k-1)
                 h=hour
                 d=day
                 m=month
@@ -283,11 +283,14 @@ class SatelliteInfo():
         #print su file
         with open("Satellites_positions_output.txt", "a") as file:
             for item in positions:
-                file.write("%s\n" % item)
+                if item[0][4]==0 or item[0][4]==15 or item[0][4]==30 or item[0][4]==45:
+                    #prints a value every 15 minutes
+                    file.write("%s\n" % item)
                 
         with open("Satellites_velocities_output.txt", "a") as file2:
             for item in velocities:
-                file2.write("%s\n" % item)
+                if item[0][4]==0 or item[0][4]==15 or item[0][4]==30 or item[0][4]==45:
+                    file2.write("%s\n" % item)
                 
                          
 
