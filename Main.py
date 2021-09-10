@@ -369,7 +369,6 @@ class orbitNoteBookPanel(wx.Panel):
 
     def OrbitCompute(self, event):
         try:
-            #plt.clf()  #clears figure
             filePath = MainFrame.onOpen.filePath
             if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
                 dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx | .*n)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
@@ -666,7 +665,7 @@ class ionosphereNoteBookPanel(wx.Panel):
         ionoParams = readIono( filePath )
 
         if len(ionoParams) == 0:
-            dlg = wx.MessageDialog(None, 'Selected file does not have Ionospheric  Correction Parameters', 'Information', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'Selected file does not have Ionospheric Correction Parameters', 'Information', wx.OK|wx.ICON_INFORMATION, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
