@@ -440,11 +440,11 @@ class orbitNoteBookPanel(wx.Panel):
                 fig, (ax1, ax2) = plt.subplots(2, 1)
                 fig.suptitle('Satellite: G'+str(userPRN), size=20)
 
-                ax1.plot(angles.sv_datetimes, angles.sv_azimuth, 'ro--', linewidth=2)
+                ax1.plot(angles.sv_datetimes, angles.sv_azimuth, 'ro', linewidth=2)
                 ax1.set_ylabel('Azimuth', fontdict=font1)
                 ax1.grid()
 
-                ax2.plot(angles.sv_datetimes, angles.sv_elevation, 'bo--', linewidth=2)
+                ax2.plot(angles.sv_datetimes, angles.sv_elevation, 'bo', linewidth=2)
                 ax2.set_xlabel('Time', fontdict=font1)
                 ax2.set_ylabel('Elevation', fontdict=font1)
                 ax2.grid()            
