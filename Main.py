@@ -372,7 +372,7 @@ class orbitNoteBookPanel(wx.Panel):
             #plt.clf()  #clears figure
             filePath = MainFrame.onOpen.filePath
             if ( os.path.splitext(filePath)[1] != '.rnx' ) and (os.path.splitext(filePath)[1][3] != 'n'):
-                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg = wx.MessageDialog(None, 'Selected file is not of Navigation type (.rnx | .*n)', 'File Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -414,9 +414,9 @@ class orbitNoteBookPanel(wx.Panel):
         else:
             #ANGLES
             try:
-                long = self.longTextCtrl.GetValue()
-                lat = self.latTextCtrl.GetValue()
-                h = self.hTextCtrl.GetValue()
+                longitude = self.longTextCtrl.GetValue()
+                latitude = self.latTextCtrl.GetValue()
+                height = self.hTextCtrl.GetValue()
                 
                 # Check that the parameters are not empty
                 if self.longTextCtrl.GetValue() == '' or self.latTextCtrl.GetValue() == '' or self.hTextCtrl.GetValue() == '':
@@ -426,13 +426,13 @@ class orbitNoteBookPanel(wx.Panel):
                     return
                 
                 # Check the range of the entered values
-                if float(long) > 180 or float(long) < -180 or float(lat) > 90 or float(lat) < -90:
+                if float(longitude) > 180 or float(longitude) < -180 or float(latitude) > 90 or float(latitude) < -90:
                     dlg = wx.MessageDialog(None, 'Value entered is out of range', 'Value error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
-                angles = SatelliteInfo( filePath, userPRN, long, lat, h, True )
+                angles = SatelliteInfo( filePath, userPRN, longitude, latitude, height, True )
             
                 #Azimuth and elevation
                 font1={'family':'serif','color':'black','size':16}
