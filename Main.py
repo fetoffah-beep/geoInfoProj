@@ -380,7 +380,15 @@ class orbitNoteBookPanel(wx.Panel):
             userPRN = self.prnTextCtrl.GetValue()
             availablePRN = MainFrame.onOpen.satellitePRN
             availablePRN.sort()
-            
+        
+            try:
+                numberPRN=int(userPRN)
+            except Exception as err:
+                dlg = wx.MessageDialog(None, 'PRN must be an integer number', 'Input Type Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return  
+        
             if userPRN not in availablePRN:
                 dlg = wx.MessageDialog(None, 'The SV PRN is not available. Available ones are: ' + ', '.join(availablePRN), 'PRN Unavilability', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
                 dlg.ShowModal()
@@ -388,7 +396,7 @@ class orbitNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -649,7 +657,7 @@ class ionosphereNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
