@@ -43,8 +43,6 @@ class MainFrame ( wx.Frame ):
 
         
         vSizer = wx.BoxSizer( wx.VERTICAL )     # Horinzontal box sizer
-        hSizer = wx.BoxSizer( wx.HORIZONTAL )     # Vertival box sizer
-
         
         self.SetSizer( vSizer )
         self.Layout()
@@ -100,8 +98,6 @@ class MainFrame ( wx.Frame ):
         shortCuts = [wx.AcceleratorEntry() for i in range(3)]
         shortCuts[0].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_O, self.openMenu.GetId())
         shortCuts[1].Set(wx.ACCEL_ALT, wx.WXK_F4, self.closeMenu.GetId())
-        # shortCuts[2].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_K, self.satelliteOrtbitItem.GetId())
-        # shortCuts[3].Set(wx.ACCEL_CTRL, wx.WXK_CONTROL_I, self.ionosphericModel.GetId())
         shortCuts[2].Set(wx.ACCEL_NORMAL, wx.WXK_F1, self.helpContentMenuItem.GetId())
 
         accel = wx.AcceleratorTable(shortCuts)
@@ -136,8 +132,6 @@ class MainFrame ( wx.Frame ):
         # Menu events
         self.Bind( wx.EVT_MENU, self.onOpen, id = self.openMenu.GetId() )
         self.Bind( wx.EVT_MENU, self.CloseFunc, id = self.closeMenu.GetId() )
-        # self.Bind( wx.EVT_MENU, self.onOrbit, id = self.satelliteOrtbitItem.GetId() )
-        # self.Bind( wx.EVT_MENU, self.ionoModel, id = self.ionosphericModel.GetId() )
         self.Bind( wx.EVT_MENU, self.helpContent, id = self.helpContentMenuItem.GetId() )
         self.Bind( wx.EVT_MENU, self.aboutPage, id = self.aboutMenuItem.GetId() )
 
@@ -255,11 +249,9 @@ class orbitNoteBookPanel(wx.Panel):
         # Add the static box to the sizer
         noteBookSizer.Add( satelliteStaticbox, 1, wx.ALL|wx.EXPAND, 15 )
         
-        
-        # Widgets for entering parameters for satellite orbit modelling
-        
         # Add spacer for a nicer view
         satelliteStaticbox.AddSpacer(10)
+        
         
         orbitSizerLeft = wx.BoxSizer( wx.VERTICAL )
 
@@ -395,7 +387,7 @@ class orbitNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file has been selected \n \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -656,7 +648,7 @@ class ionosphereNoteBookPanel(wx.Panel):
                 return
 
         except Exception as err:
-            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click File -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
+            dlg = wx.MessageDialog(None, 'No navigation file (.rnx) has been selected \n \n Click Input -> Open to select file', 'File Error', wx.OK | wx.ICON_ERROR, wx.DefaultPosition )
             dlg.ShowModal()
             dlg.Destroy()
             return
