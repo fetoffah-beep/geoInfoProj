@@ -302,7 +302,7 @@ class orbitNoteBookPanel(wx.Panel):
         
         orbitSizerRight = wx.BoxSizer( wx.VERTICAL )
         
-        choiceChoices = [ u"Global Map (groundtrack)", u"Local Map (azimuth/elevation)" ]
+        choiceChoices = [ u"Global Map (ground track)", u"Local Map (azimuth/elevation)" ]
         self.choice = wx.Choice( satelliteStaticbox.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choiceChoices, wx.CB_SORT )
         orbitSizerRight.Add( self.choice, 0, wx.ALL, 5 )
 
@@ -393,7 +393,7 @@ class orbitNoteBookPanel(wx.Panel):
             return
         
                 
-        if self.choice.GetStringSelection() ==  "Global Map (groundtrack)":
+        if self.choice.GetStringSelection() ==  "Global Map (ground track)":
             #ORBIT
             satelliteOrbit = SatelliteInfo( filePath, userPRN, 0, 0, 0, False )
             
