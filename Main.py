@@ -22,12 +22,11 @@ from functions.read_rinex import getSatellitePRN as gsp
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 import cartopy.crs as ccrs
 from astroplan.plots import plot_sky
 from datetime import datetime
-matplotlib.use('WXAgg')
+
+# import erfa # Astropy has become deprecated
 
 
 ###########################################################################
@@ -583,25 +582,25 @@ class ionosphereNoteBookPanel(wx.Panel):
         # Add spacer for a nicer view
         ionoSizerRight.AddSpacer(2)
         
-        self.elevTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        self.elevTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
         ionoSizerRight.Add( self.elevTextCtrl, 0, wx.ALL, 5 )
 
         # Add spacer for a nicer view
         ionoSizerRight.AddSpacer(4)
         
-        self.azTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        self.azTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
         ionoSizerRight.Add( self.azTextCtrl, 0, wx.ALL, 5 )
 
         # Add spacer for a nicer view
         ionoSizerRight.AddSpacer(5)
         
-        self.longTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        self.longTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
         ionoSizerRight.Add( self.longTextCtrl, 0, wx.ALL, 5 )
 
         # Add spacer for a nicer view
         ionoSizerRight.AddSpacer(7)
         
-        self.latTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_TAB|wx.TE_RIGHT )
+        self.latTextCtrl = wx.TextCtrl( ionosphereStaticbox.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_RIGHT )
         ionoSizerRight.Add( self.latTextCtrl, 0, wx.ALL, 5 )
         
         
