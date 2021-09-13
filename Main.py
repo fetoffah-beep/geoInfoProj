@@ -22,9 +22,12 @@ from functions.read_rinex import getSatellitePRN as gsp
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 import cartopy.crs as ccrs
 from astroplan.plots import plot_sky
 from datetime import datetime
+matplotlib.use('WXAgg')
 
 # import erfa # Astropy has become deprecated
 
