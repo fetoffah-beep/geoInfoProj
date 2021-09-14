@@ -6,86 +6,140 @@
 </head>
 <body>
 	<p >
-		<h4 style="text-align:center;"> Menu Items </h4>
+		<h2 style="text-align:center;"> Details about the SOFTWARE </h2>
 	</p>
 	
 	
-	<h5>File </h5> 
-	The File menu contains the items Open and Close. 
+	<h3>Input </h3> 
+	The Input menu contains the items Open and Close. 
 
  	<center>
 		<img src="images/4.JPG">
 	</center>
 
+	<p>
+		The <b>OPEN</b> menu item provides access to the file directory (see Figure below) for opening an LNAV RINEX file. When the file is not of the GPS navigation type, an error message is printed to the user, as shown in Figure 3, defining the error and by closing the dialog, the user can select the required file type. 
+	</p>
 
-
-	The Open menu item is needed to open a GPS Navigation message file (.rnx) before the main functionalities can be 
-	accessed.
-
+	
 	<center>
 		<img src="images/9.JPG">
 	</center>
 
  
+	<p>
+		When the file is not of the type '.rnx|.yyn', an error message is printed to the user as shown below defining the error and by closing the dialog, the user can select the required file type.
 
+	</p>
 
-	When the file is not of the type ‘.rnx’, an error message is printed to the user as shown below
-	defining the error and by closing the dialog, the user can select the required file type.
-
+	
  	<center>
 		<img src="images/8.JPG">
 	</center>
 
 
-	The Close menu item exits the main window of the GUI.
+	The <b>CLOSE</b> menu item exits the main window of the GUI.
 
-	<h5>Modules</h5>
-	The Modules menu shows the main functionalities (Satellite Orbit and Ionospheric Model) for the software.
+	<br>
+	<br>
+ 	<p>
+ 		<h3>Help </h3>
+ 		The Help menu contains the items Help Contents and About page. 
+	</p>
+ 	<center>
+		<img src="images/6.JPG">
+	</center>
+
+	<p>
+		The <b>Help Content</b> gives a brief documentation (see Figure below) on how to use the software and the modules being used.
+	</p>
+
+	
+	<center>
+		<img src="images/help.JPG">
+	</center>
+	<br>
+	<br>
+ 
+	<p>
+		The <b>About</b> gives a brief description of GDPS
+	</p>
 
 	<center>
-		<img src="images/5.JPG">
+		<img src="images/7.JPG">
 	</center>
- 
 
-	The Satellite Orbit item gives navigation to the Orbit panel.
+	<br>
+	<br>
+	<br>
+	<h3>Satellite Orbit</h3>
+	<p>
+		This is the initial panel for the orbit visualization. From here, you can choose between 2 preferable modes, Global or Local Map.
+	</p>
 
-	The Ionospheric Model navigates to the Ionosphere panel where the paramters needed for performing the Ionosphere computation are needed. On this panel, the user selects the preferred model (Station analysis or Globe analysis).
+
+	<center>
+		<img src="images/orbitPanel.JPG">
+	</center>
+
+	<p>
+		By selecting Global Map , you can insert the PRN number of the satellite you wants to visualize and click on the ‘proceed’ button. This will produce the map of the orbit.
+	</p>
+
+	<center>
+		<img src="images/orbitGlobal.JPG">
+	</center>
+
+	<p>
+		By switching to Local Map, the number of parameters to insert changes. In addition to the SV PRN number, boxes to enter the position of the reference point in geodetic coordinates are added on the screen. From here, it is possible to produce the trend of the azimuth and elevation in time with respect to the inserted parameters.
+	</p>
+
+	<center>
+		<img src="images/orbitLocal.JPG">
+	</center>
+
+
+	<h3>Ionosphere Tab</h3>
+
+	<p>
+		On this panel, you can select also a preferred model (Global Map or Local Map).
+	</p>
+
 	<center>
 		<img src="images/1.JPG">
 	</center>
 
- 
-
-	By selecting the Globe aanalysis, the panel is updated, exposing the buttons for inserting the paramters (time, elevation and azimuth). The default values in the buttons are zeros and the user can change the values. Also, only numerical values can be entered in each button. By clicking on the ‘Proceed’ button, an Ionospheric Error map is produced showing the variations in the ionospheric effects on the globe.
+	<p>
+		By selecting the Global Map, the panel is updated, exposing the buttons for inserting the required parameters (time, elevation and azimuth).  The default time values are zeros and the user can change the values. Also, only numerical values can be entered in each button. By clicking on the ‘Proceed’ button, an Ionospheric Error map is produced showing the variations in the ionospheric effects on the globe.
+	</p>
 
 	<center>
 		<img src="images/2.JPG">
 	</center>
 
- 
-	By selecting the station analysis, the panel is also updated, exposing the buttons for inserting the parameters (time, longitude and latitude) required for the model. Also, the default values in the buttons are zeros and the user can change the values. By clicking on the ‘Proceed’ button, an Ionospheric Error map is produced showing the variations in the ionospheric effects on the globe.
- 	
- 	<center>
+	<p>
+		By selecting the Local Map, the panel is also updated, exposing the buttons for inserting the parameters (time, longitude and latitude) required for the model. Also, the default time values are zeros and the user can change the values. By clicking on the ‘Proceed’ button, an Ionospheric Error map is produced showing the variations in the ionospheric effects on the globe.
+	</p>
+
+	<center>
 		<img src="images/3.JPG">
 	</center>
-
-	In both instances of Global and station analysis, when a GPS Navigation message file has not been selected, the user is informed of the unavailability of the Rinex file and given a guide to select the file.
-
+	
+	<p>
+		In both instances of Global or Local Map analysis, when a GPS Navigation message file has not been selected, you are informed of the unavailability of the RINEX file and given a guide to select the file.
+	</p>
 	<center>
 		<img src="images/11.JPG">
 	</center>
  
 
-	Also, when a file is selected and there are no ionospheric error correction parameters in the file, the user is also informed of such and can select another file.
+	Also, when a file is selected and there are no ionospheric error correction parameters in the file, you will also be informed of such and can select another file.
 
 	<center>
 		<img src="images/12.JPG">
 	</center>
  
-
     </p>
-
-	
 
 </body>
 </html>
